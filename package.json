@@ -1,0 +1,32 @@
+{
+  "name": "evil-bot-js",
+  "version": "1.0.0",
+  "main": "dist/app.js",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "yarn run compile",
+    "pretest": "yarn run compile",
+    "posttest": "yarn run check",
+    "dev": "ts-node-dev src/app.ts"
+  },
+  "author": "M0rtuary",
+  "license": "MIT",
+  "dependencies": {
+    "twitch": "^3.4.1",
+    "twitch-chat-client": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "12.7.2",
+    "gts": "^1.1.0",
+    "ts-node": "^8.3.0",
+    "ts-node-dev": "^1.0.0-pre.41",
+    "tslint": "^5.18.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "~3.5.0"
+  }
+}
