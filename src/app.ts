@@ -1,37 +1,17 @@
-import TwitchClient, { AccessToken, UserFollow } from 'twitch';
-import ChatClient, { PrivateMessage } from 'twitch-chat-client';
+import Vorpal from 'vorpal';
+import passwordPrompt from 'password-prompt';
 
-async function run(): Promise<void> {
-  const clientId = 'c96zyldxwq27mbuvp2s6kwcgkq5l5k';
-  const accessToken = 'pj9t8vnwk1bio5i5wpqjmu8cky1osu';
-  const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
-  console.log(twitchClient);
+const vorpal = new Vorpal();
 
-  const chatClient = await ChatClient.forTwitchClient(twitchClient);
-  await chatClient.connect();
-  await chatClient.waitForRegistration();
-  const userName = 'm0rtuary';
-  await chatClient.join(userName);
-  chatClient.onPrivmsg(async (channel: string, user: string, message: string, msg: PrivateMessage) => {
-    if (message === '!followage') {
-      if (msg.userInfo.userId === undefined || msg.channelId === null) {
-        console.log('userid is undefined');
-        return;
-      }
-      const follow = await twitchClient.kraken.users.getFollowedChannel(msg.userInfo.userId, msg.channelId);
+vorpal.delimiter('eviljs$').show();
+vorpal.command('login <email>', 'Logs in the user').action(async args => {
+  const password: string = await passwordPrompt('Enter your password: ', { method: 'hide' });
+  console.log(`Logged In User with email "${args.email}" and password "${password}"`);
+});
+vorpal.command('register <email>', 'Logs in the user').action(async args => {
+  const password: string = await passwordPrompt('Enter your password: ', { method: 'hide' });
+  const password2: string = await passwordPrompt('Repeat your password: ', { method: 'hide' });
 
-      if (follow) {
-        const currentTimestamp = Date.now();
-        const followStartTimestamp = follow.followDate.getTime();
-        chatClient.say(
-          channel,
-          `@${user} You have been following for ${(currentTimestamp - followStartTimestamp) / 1000}!`
-        );
-      } else {
-        chatClient.say(channel, `@${user} You are not following!`);
-      }
-    }
-  });
-}
-
-run().then(() => console.log('-- Startup Finished'));
+  if (password !== password2) console.log(`Password "${password}" doesn't match with "${password2}"`);
+  else console.log(`Register User with email "${args.email}" and password "${password}"`);
+});
