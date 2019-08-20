@@ -17,8 +17,11 @@
   "author": "M0rtuary",
   "license": "MIT",
   "dependencies": {
+    "@types/vorpal": "^1.11.0",
+    "password-prompt": "^1.1.2",
     "twitch": "^3.4.1",
-    "twitch-chat-client": "^3.4.1"
+    "twitch-chat-client": "^3.4.1",
+    "vorpal": "^1.12.0"
   },
   "devDependencies": {
     "@types/node": "12.7.2",
