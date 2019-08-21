@@ -1,5 +1,5 @@
 import Vorpal from 'vorpal';
-import { auth } from './firebase';
+import { auth, firestore } from './firebase';
 import chalk from 'chalk';
 import { validateEmail } from './utilities/validators';
 import inquirer from 'inquirer';
@@ -58,5 +58,42 @@ vorpal.command('register <email>', 'Registers a new user').action(async args => 
   } catch (e) {
     console.log(chalk.bgRed(e.code));
   }
+  if (auth.currentUser == null) {
+    console.error('Error: after register currentUser is not set');
+    return;
+  }
+  let promptResults: {
+    addCredentials: boolean;
+    addClientId?: string;
+    addAccessToken?: string;
+  };
+  promptResults = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'addCredentials',
+      message: 'Do you want to add Bot Credentials now?',
+      default: true,
+    },
+    {
+      type: 'input',
+      name: 'addClientId',
+      message: 'Please Enter your Twitch Client ID:',
+      when: (response: { addCredentials: boolean }) => response.addCredentials,
+    },
+    {
+      type: 'input',
+      name: 'addAccessToken',
+      message: 'Please Enter your Twitch Access Token:',
+      when: (response: { addCredentials: boolean }) => response.addCredentials,
+    },
+  ]);
+  if (!promptResults.addCredentials) return;
+  await firestore
+    .collection('users')
+    .doc(auth.currentUser.uid)
+    .set({
+      clientId: promptResults.addClientId,
+      accessToken: promptResults.addAccessToken,
+    });
 });
 vorpal.command('loggedIn', 'Checks if user is logged in').action(async () => console.log(auth.currentUser != null));
