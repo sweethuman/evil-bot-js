@@ -1,9 +1,8 @@
 import Vorpal from 'vorpal';
-import passwordPrompt from 'password-prompt';
 import { auth } from './firebase';
 import chalk from 'chalk';
 import { validateEmail } from './utilities/validators';
-
+import inquirer from 'inquirer';
 const vorpal = new Vorpal();
 
 vorpal.delimiter('eviljs$').show();
@@ -12,10 +11,17 @@ vorpal.command('login <email>', 'Logs in the user').action(async args => {
     console.log('Email is not valid!');
     return;
   }
-  const password: string = await passwordPrompt('Enter your password: ', { method: 'hide' });
+  const promptResult = await inquirer.prompt([
+    {
+      type: 'password',
+      name: 'loginPassword',
+      message: 'Please enter your login password',
+      mask: '*',
+    },
+  ]);
   try {
-    await auth.signInWithEmailAndPassword(args.email, password);
-    console.log(`Logged In User with email "${args.email}" and password "${password}"`);
+    await auth.signInWithEmailAndPassword(args.email, promptResult.loginPassword);
+    console.log(`Logged In User with email "${args.email}" and password "${promptResult.loginPassword}"`);
   } catch (e) {
     console.log(chalk.bgRed(e.code));
   }
@@ -25,8 +31,22 @@ vorpal.command('register <email>', 'Registers a new user').action(async args => 
     console.log('Email is not valid!');
     return;
   }
-  const password: string = await passwordPrompt('Enter your password: ', { method: 'hide' });
-  const password2: string = await passwordPrompt('Repeat your password: ', { method: 'hide' });
+  const promptResult = await inquirer.prompt([
+    {
+      type: 'password',
+      name: 'registerPassword',
+      message: 'Please enter your register password',
+      mask: '*',
+    },
+    {
+      type: 'password',
+      name: 'repeatPassword',
+      message: 'Repeat your password',
+      mask: '*',
+    },
+  ]);
+  const password: string = promptResult.registerPassword;
+  const password2: string = promptResult.repeatPassword;
   if (password !== password2) {
     console.log(`Password "${password}" doesn't match with "${password2}"`);
     return;

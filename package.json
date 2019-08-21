@@ -17,9 +17,11 @@
   "author": "M0rtuary",
   "license": "MIT",
   "dependencies": {
+    "@types/inquirer": "^6.5.0",
     "@types/vorpal": "^1.11.0",
     "chalk": "^2.4.2",
     "firebase": "^6.4.0",
+    "inquirer": "^6.5.1",
     "password-prompt": "^1.1.2",
     "twitch": "^3.4.1",
     "twitch-chat-client": "^3.4.1",
