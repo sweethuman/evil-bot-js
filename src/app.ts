@@ -96,4 +96,49 @@ vorpal.command('register <email>', 'Registers a new user').action(async args => 
       accessToken: promptResults.addAccessToken,
     });
 });
-vorpal.command('loggedIn', 'Checks if user is logged in').action(async () => console.log(auth.currentUser != null));
+vorpal
+  .command('credentials', 'Add or Edit your Twitch Credentials')
+  .validate(() => {
+    if (auth.currentUser != null) {
+      return true;
+    }
+    return chalk.red('User is not logged in');
+  })
+  .action(async () => {
+    const userDoc = await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .get();
+    const clientId = userDoc.data() != null ? userDoc.data()!.clientId : '';
+    const accessToken = userDoc.data() != null ? userDoc.data()!.accessToken : '';
+    let promptResults: {
+      clientId: string;
+      accessToken: string;
+    };
+    promptResults = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'clientId',
+        message: 'Please Enter your Twitch Client ID:',
+        default: clientId,
+      },
+      {
+        type: 'input',
+        name: 'accessToken',
+        message: 'Please Enter your Twitch Access Token:',
+        default: accessToken,
+      },
+    ]);
+    await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .set(
+        {
+          clientId: promptResults.clientId,
+          accessToken: promptResults.accessToken,
+        },
+        { merge: true }
+      );
+    vorpal.log(chalk.green('User Credentials Changed!'));
+  });
+vorpal.command('loggedin', 'Checks if user is logged in').action(async () => console.log(auth.currentUser != null));
