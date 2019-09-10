@@ -1,6 +1,7 @@
 import TwitchClient from 'twitch';
 import ChatClient, { PrivateMessage } from 'twitch-chat-client';
 import { executeCommands } from './commandProcessor';
+import './commands';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
