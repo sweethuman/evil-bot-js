@@ -2,6 +2,7 @@ import TwitchClient from 'twitch';
 import ChatClient, { PrivateMessage } from 'twitch-chat-client';
 import { executeCommands } from './commandProcessor';
 import './commands';
+import { isUserIdPresent } from './trackers/presenceTracker';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
@@ -15,6 +16,10 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
         const commandMessage = await executeCommands(channel, user, message, msg, twitchClient);
         if (commandMessage != null) {
             chatClient.say(channel, commandMessage);
+            return;
+        }
+        if (!isUserIdPresent(msg.userInfo.userId!)) {
+            chatClient.say(channel, `${msg.userInfo.displayName} bine ai venit!`);
         }
     });
 }
