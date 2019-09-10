@@ -3,6 +3,7 @@ import ChatClient, { PrivateMessage } from 'twitch-chat-client';
 import { executeCommands } from './commandProcessor';
 import './commands';
 import { isUserIdPresent } from './trackers/presenceTracker';
+import { addTalker } from './trackers/talkerTracker';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
@@ -21,5 +22,6 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
         if (!isUserIdPresent(msg.userInfo.userId!)) {
             chatClient.say(channel, `${msg.userInfo.displayName} bine ai venit!`);
         }
+        addTalker({ userId: msg.userInfo.userId!, displayName: msg.userInfo.displayName });
     });
 }
