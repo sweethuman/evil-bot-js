@@ -3,6 +3,9 @@ import { auth, firestore } from './firebase';
 import chalk from 'chalk';
 import { validateEmail } from './utilities/validators';
 import inquirer from 'inquirer';
+import * as bot from './bot';
+import * as loggingModule from './bot/loggingModule';
+
 const vorpal = new Vorpal();
 
 vorpal.delimiter('eviljs$').show();
@@ -66,6 +69,7 @@ vorpal.command('register <email>', 'Registers a new user').action(async args => 
     addCredentials: boolean;
     addClientId?: string;
     addAccessToken?: string;
+    addUsername?: string;
   };
   promptResults = await inquirer.prompt([
     {
@@ -86,6 +90,12 @@ vorpal.command('register <email>', 'Registers a new user').action(async args => 
       message: 'Please Enter your Twitch Access Token:',
       when: (response: { addCredentials: boolean }) => response.addCredentials,
     },
+    {
+      type: 'input',
+      name: 'addUsername',
+      message: 'Please Enter your Twitch Username:',
+      when: (response: { addCredentials: boolean }) => response.addCredentials,
+    },
   ]);
   if (!promptResults.addCredentials) return;
   await firestore
@@ -94,6 +104,7 @@ vorpal.command('register <email>', 'Registers a new user').action(async args => 
     .set({
       clientId: promptResults.addClientId,
       accessToken: promptResults.addAccessToken,
+      twitchUsername: promptResults.addUsername,
     });
 });
 vorpal
@@ -111,9 +122,11 @@ vorpal
       .get();
     const clientId = userDoc.data() != null ? userDoc.data()!.clientId : '';
     const accessToken = userDoc.data() != null ? userDoc.data()!.accessToken : '';
+    const twitchUsername = userDoc.data() != null ? userDoc.data()!.twitchUsername : '';
     let promptResults: {
       clientId: string;
       accessToken: string;
+      twitchUsername: string;
     };
     promptResults = await inquirer.prompt([
       {
@@ -128,6 +141,12 @@ vorpal
         message: 'Please Enter your Twitch Access Token:',
         default: accessToken,
       },
+      {
+        type: 'input',
+        name: 'twitchUsername',
+        message: 'Please Enter your Twitch Username:',
+        default: twitchUsername,
+      },
     ]);
     await firestore
       .collection('users')
@@ -136,9 +155,34 @@ vorpal
         {
           clientId: promptResults.clientId,
           accessToken: promptResults.accessToken,
+          twitchUsername: promptResults.twitchUsername,
         },
         { merge: true }
       );
     vorpal.log(chalk.green('User Credentials Changed!'));
+  });
+vorpal
+  .command('run', 'Runs the bot')
+  .validate(() => {
+    if (auth.currentUser != null) {
+      return true;
+    }
+    return chalk.red('User is not logged in');
+  })
+  .action(async () => {
+    function log(value: string) {
+      vorpal.log(value);
+    }
+    loggingModule.setupLogging(log);
+    //TODO remove duplicate code
+    const userDoc = await firestore
+      .collection('users')
+      .doc(auth.currentUser!.uid)
+      .get();
+    const clientId = userDoc.data() != null ? userDoc.data()!.clientId : '';
+    const accessToken = userDoc.data() != null ? userDoc.data()!.accessToken : '';
+    const twitchUsername = userDoc.data() != null ? userDoc.data()!.twitchUsername : '';
+    await bot.run(clientId, accessToken, twitchUsername);
+    vorpal.log('Startup Has Finished');
   });
 vorpal.command('loggedin', 'Checks if user is logged in').action(async () => console.log(auth.currentUser != null));
