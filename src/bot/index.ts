@@ -4,6 +4,7 @@ import { executeCommands } from './commandProcessor';
 import './commands';
 import { isUserIdPresent } from './trackers/presenceTracker';
 import { addTalker } from './trackers/talkerTracker';
+import * as timedMessagesModule from './modules/timedMessages';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
@@ -13,6 +14,7 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
     await chatClient.connect();
     await chatClient.waitForRegistration();
     await chatClient.join(twitchUsername);
+    await timedMessagesModule.start('#' + twitchUsername, chatClient);
     chatClient.onPrivmsg(async (channel: string, user: string, message: string, msg: PrivateMessage) => {
         const commandMessage = await executeCommands(channel, user, message, msg, twitchClient);
         if (commandMessage != null) {
