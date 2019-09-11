@@ -28,7 +28,8 @@ vorpal
         };
         messagesData = messagesDoc.data() != null ? messagesDoc.data()! : {};
         messagesData.messages = messagesData.messages == null ? [] : messagesData.messages;
-        //To edit Time Interval and Order of Messages that are Sent
+
+        //Prompt to Edit Time Interval and The Order In Which Messages are Sent
         const editPropResults: {
             timeInterval: number;
             messageOrder: number;
@@ -49,10 +50,12 @@ vorpal
             },
         ]);
         messagesData = { ...messagesData, ...editPropResults };
-        //Show Current Messages otherwise Show error
+
         function areMessages() {
             return messagesData.messages != null && messagesData.messages.length !== 0;
         }
+
+        //Show Current Messages otherwise Show error
         function viewMessages() {
             if (!areMessages()) {
                 vorpal.log(chalk.red('There are no Timed Messages'));
@@ -60,10 +63,10 @@ vorpal
                 _.forEach(messagesData.messages, value => vorpal.log(chalk.yellow('- ') + chalk.cyan(value)));
             }
         }
-        //Another Prompt to Edit The Array of Messages
-        //Asks If You want to Add, Edit, Delete a Message or Skip this Part
-        let finished = false;
 
+        //Another Prompt to Edit The Array of Messages
+        //Asks If You want to Add, Edit, Delete a Message or Finish Editing
+        let finished = false;
         while (!finished) {
             vorpal.log('');
             const { editAction }: { editAction: string } = await inquirer.prompt([
@@ -104,6 +107,9 @@ vorpal
                     },
                 },
             ]);
+
+            //Run Code For The Selection Made
+            //Edit and Remove Actions are available only if there are Messages
             switch (editAction) {
                 case 'add': {
                     const { addMessage }: { addMessage: string } = await inquirer.prompt([
@@ -166,7 +172,7 @@ vorpal
                     break;
             }
         }
-        //Asks if You want to save the changes or cancel (later if you want to do it again)
+        //Shows The Final Version of The Timed Messages Config
         vorpal.log('');
         vorpal.log('Message Time Interval ' + chalk.cyan(messagesData.timeInterval!.toString()) + ' Minutes');
         function numberToOrderName(input: number): string {
@@ -183,6 +189,8 @@ vorpal
         );
         vorpal.log('The List of Timed Messages:');
         viewMessages();
+
+        //Asks if you want to Save Changes
         const confirmResult: { save: boolean } = await inquirer.prompt([
             {
                 type: 'confirm',
