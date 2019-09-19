@@ -3,6 +3,7 @@ import { PrivateMessage } from 'twitch-chat-client';
 import { log } from '../loggingModule';
 import chalk from 'chalk';
 import TwitchClient from 'twitch';
+import { logger } from '../../winston';
 
 const command: CommandCallback = async (
     channel: string,
@@ -13,7 +14,7 @@ const command: CommandCallback = async (
     twitchClient: TwitchClient
 ) => {
     if (msg.userInfo.userId === undefined || msg.channelId === null) {
-        console.log('userid is undefined');
+        logger.error('userid is undefined');
         return 'userid is undefined or channelId is undefined';
     }
     const follow = await twitchClient.kraken.users.getFollowedChannel(msg.userInfo.userId, msg.channelId);

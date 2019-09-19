@@ -6,7 +6,7 @@ import { vorpal } from '../vorpal';
 
 vorpal.command('login <email>', 'Logs in the user').action(async args => {
     if (!validateEmail(args.email)) {
-        console.log('Email is not valid!');
+        vorpal.log('Email is not valid!');
         return;
     }
     const promptResult = await inquirer.prompt([
@@ -19,8 +19,8 @@ vorpal.command('login <email>', 'Logs in the user').action(async args => {
     ]);
     try {
         await auth.signInWithEmailAndPassword(args.email, promptResult.loginPassword);
-        console.log(`Logged In User with email "${args.email}" and password "${promptResult.loginPassword}"`);
+        vorpal.log(`Logged In User with email "${args.email}" and password "${promptResult.loginPassword}"`);
     } catch (e) {
-        console.log(chalk.bgRed(e.code));
+        vorpal.log(chalk.bgRed(e.code));
     }
 });

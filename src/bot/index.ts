@@ -8,7 +8,7 @@ import * as timedMessagesModule from './modules/timedMessages';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
-    console.log(twitchClient);
+    //console.log(twitchClient);
 
     const chatClient = await ChatClient.forTwitchClient(twitchClient);
     await chatClient.connect();
