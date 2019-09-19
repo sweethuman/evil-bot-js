@@ -1,6 +1,5 @@
 import { addCommand, CommandCallback, ParsedCommand } from '../commandProcessor';
 import { PrivateMessage } from 'twitch-chat-client';
-import { log } from '../loggingModule';
 import chalk from 'chalk';
 import TwitchClient from 'twitch';
 import { logger } from '../../winston';
@@ -22,10 +21,10 @@ const command: CommandCallback = async (
     if (follow) {
         const currentTimestamp = Date.now();
         const followStartTimestamp = follow.followDate.getTime();
-        log('aa');
+        logger.silly('aa');
         return `@${user} You have been following for ${(currentTimestamp - followStartTimestamp) / 1000}!`;
     } else {
-        log(chalk.yellow('aa'));
+        logger.silly(chalk.yellow('aa'));
         return `@${user} You are not following!`;
     }
 };

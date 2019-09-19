@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { PrivateMessage } from 'twitch-chat-client';
 import TwitchClient from 'twitch';
-import { log } from '../loggingModule';
 import chalk from 'chalk';
+import { logger } from '../../winston';
 
 export interface ParsedCommand {
     command: string;
@@ -38,7 +38,7 @@ export async function executeCommands(
     if (parsedCommand == null) return;
     const commandCallback = commands.get(parsedCommand.command);
     if (commandCallback == null) return;
-    log(chalk.blue(parsedCommand.command) + chalk.yellow(' command called'));
+    logger.debug(chalk.blue(parsedCommand.command) + chalk.yellow(' command called'));
     return commandCallback(channel, user, message, msg, parsedCommand, twitchClient);
 }
 

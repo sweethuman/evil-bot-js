@@ -1,8 +1,8 @@
 import ChatClient from 'twitch-chat-client';
 import { auth, firestore } from '../../firebase';
-import { log } from '../loggingModule';
 import chalk from 'chalk';
 import { getRandomInt } from '../../utilities/useful';
+import { logger } from '../../winston';
 
 let intervalTimeout: NodeJS.Timeout | null = null;
 let messageCounter: number;
@@ -13,7 +13,7 @@ export async function start(channel: string, chatClient: ChatClient) {
         .doc('timedmessages')
         .get();
     if (!messagesDoc.exists) {
-        log(chalk.bgRed('Timed Messages Configuration Does Not Exist \n MODULE DISABLED'));
+        logger.warn(chalk.bgRed('Timed Messages Configuration Does Not Exist \n MODULE DISABLED'));
         return;
     }
     const messagesData: {
@@ -26,11 +26,11 @@ export async function start(channel: string, chatClient: ChatClient) {
         messages?: string[];
     } = messagesDoc.data()!;
     if (messagesData.timeInterval == null || messagesData.messageOrder == null || messagesData.messages == null) {
-        log(chalk.bgRed('Timed Messages Config is not a valid CONFIG'));
+        logger.error(chalk.bgRed('Timed Messages Config is not a valid CONFIG'));
         return;
     }
     if (messagesData.messages.length === 0) {
-        log(chalk.red('There are no Timed Messages! \n MODULE DISABLED'));
+        logger.warn(chalk.red('There are no Timed Messages! \n MODULE DISABLED'));
         return;
     }
 
@@ -53,8 +53,12 @@ export async function start(channel: string, chatClient: ChatClient) {
                 break;
             }
             default: {
-                log(
-                    chalk.red(`Message Order ${messagesData.messageOrder} does not exist in current version of the app`)
+                logger.error(
+                    chalk.red(
+                        `Message Order ${chalk.blue(
+                            `${messagesData.messageOrder}`
+                        )} does not exist in current version of the app; Timed Messages Disabled`
+                    )
                 );
                 return;
             }
@@ -65,7 +69,7 @@ export async function start(channel: string, chatClient: ChatClient) {
 
 export function stop(): void {
     if (intervalTimeout == null) {
-        log(chalk.red("Timed Messages Module hasn't been started"));
+        logger.error(chalk.red("Timed Messages Module hasn't been started"));
         return;
     }
     clearInterval(intervalTimeout);

@@ -1,6 +1,5 @@
 import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
-import * as loggingModule from '../../bot/loggingModule';
 import * as bot from '../../bot';
 import { vorpal } from '../vorpal';
 
@@ -13,11 +12,6 @@ vorpal
         return chalk.red('User is not logged in');
     })
     .action(async () => {
-        function log(value: string) {
-            vorpal.log(value);
-        }
-
-        loggingModule.setupLogging(log);
         //TODO remove duplicate code
         const userDoc = await firestore
             .collection('users')
