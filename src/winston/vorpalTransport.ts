@@ -1,5 +1,6 @@
 import TransportStream from 'winston-transport';
 import { vorpal } from '../cli/vorpal';
+import { MESSAGE } from 'triple-beam';
 
 export class VorpalTransport extends TransportStream {
     constructor(opts?: TransportStream.TransportStreamOptions) {
@@ -20,7 +21,8 @@ export class VorpalTransport extends TransportStream {
         });
 
         // Perform the writing to the remote service
-        vorpal.log(info.message);
+        const { level, message, ...meta } = info;
+        vorpal.log(info[MESSAGE]);
 
         callback();
     }
