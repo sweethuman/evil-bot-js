@@ -3,6 +3,7 @@ import { PrivateMessage } from 'twitch-chat-client';
 import chalk from 'chalk';
 import TwitchClient from 'twitch';
 import { logger } from '../../winston';
+import i18next from 'i18next';
 
 const command: CommandCallback = async (
     channel: string,
@@ -22,10 +23,13 @@ const command: CommandCallback = async (
         const currentTimestamp = Date.now();
         const followStartTimestamp = follow.followDate.getTime();
         logger.silly('aa');
-        return `@${user} You have been following for ${(currentTimestamp - followStartTimestamp) / 1000}!`;
+        return i18next.t('twitch:followAge_success', {
+            user,
+            timeStamp: (currentTimestamp - followStartTimestamp) / 1000,
+        });
     } else {
         logger.silly(chalk.yellow('aa'));
-        return `@${user} You are not following!`;
+        return i18next.t('twitch:followAge_fail', { user });
     }
 };
 

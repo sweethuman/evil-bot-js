@@ -5,6 +5,7 @@ import './commands';
 import { isUserIdPresent } from './trackers/presenceTracker';
 import { addTalker } from './trackers/talkerTracker';
 import * as timedMessagesModule from './modules/timedMessages';
+import i18next from 'i18next';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
@@ -22,7 +23,7 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
             return;
         }
         if (!isUserIdPresent(msg.userInfo.userId!)) {
-            chatClient.say(channel, `${msg.userInfo.displayName} bine ai venit!`);
+            chatClient.say(channel, i18next.t('twitch:welcome', { name: msg.userInfo.displayName }));
         }
         addTalker({ userId: msg.userInfo.userId!, displayName: msg.userInfo.displayName });
     });

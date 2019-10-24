@@ -1,3 +1,6 @@
 {
-  "welcome": "{{name}} bine ai venit!"
+  "welcome": "{{name}} bine ai venit!",
+  "xprateCommand": "Lurker: 1 XP + 1 Coin per 10 Minute; Talker: 1 XP + 1 Coin per 1 Minut; Dublu Coins pentru Subscriberi",
+  "followAge_success": "@{{user}} Urmaresti canalul de {{timeStamp}}!",
+  "followAge_fail": "@{{user}} Nu urmaresti canalul!"
 }

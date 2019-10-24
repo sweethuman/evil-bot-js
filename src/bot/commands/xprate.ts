@@ -1,7 +1,8 @@
 import { addCommand, CommandCallback } from '../commandProcessor';
+import i18next from 'i18next';
 
 const command: CommandCallback = () => {
-    return 'Lurker: 1 XP + 1 Coin per 10 Minute; Talker: 1 XP + 1 Coin per 1 Minut; Dublu Coins pentru Subscriber';
+    return i18next.t('twitch:xprateCommand');
 };
 
 addCommand('xprate', command);
