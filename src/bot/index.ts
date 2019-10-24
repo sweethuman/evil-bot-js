@@ -7,6 +7,7 @@ import { addTalker } from './trackers/talkerTracker';
 import * as timedMessagesModule from './modules/timedMessages';
 import * as timedPoints from './modules/timedPoints';
 import i18next from 'i18next';
+import * as userMonitor from './modules/userMonitor';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
@@ -18,6 +19,7 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
     await chatClient.join(twitchUsername);
     await timedMessagesModule.start('#' + twitchUsername, chatClient);
     await timedPoints.start(twitchUsername, twitchClient);
+    userMonitor.load();
     chatClient.onPrivmsg(async (channel: string, user: string, message: string, msg: PrivateMessage) => {
         const commandMessage = await executeCommands(channel, user, message, msg, twitchClient);
         if (commandMessage != null) {
