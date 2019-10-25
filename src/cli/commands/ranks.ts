@@ -3,11 +3,7 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { vorpal } from '../vorpal';
 import _ from 'lodash';
-
-interface Rank {
-    requiredXp: number;
-    name: string;
-}
+import { Rank } from '../../bot/modules/rankManager';
 
 vorpal
     .command('ranks', 'Add or Edit your Ranks')
