@@ -35,15 +35,11 @@ vorpal
             if (!areRanks()) {
                 vorpal.log(chalk.red('There are no Ranks'));
             } else {
-                _.forEach(ranksData.ranks, value =>
-                    vorpal.log(
-                        chalk.yellow('- ') +
-                            chalk.cyan(value.name) +
-                            ' : ' +
-                            chalk.greenBright(value.requiredXp.toString())
-                    )
-                );
+                _.forEach(ranksData.ranks, value => vorpal.log(chalk.yellow('- ') + RenderRankToString(value)));
             }
+        }
+        function RenderRankToString(rank: Rank) {
+            return chalk.cyan(rank.name) + ' : ' + chalk.greenBright(rank.requiredXp.toString());
         }
 
         //Another Prompt to Edit The Array of Messages
@@ -122,7 +118,7 @@ vorpal
                             message: 'Select the Rank you want to Edit',
                             choices: (): Array<{ name: string; value: number }> =>
                                 _.map(ranksData.ranks, (value, index) => {
-                                    return { name: value.name, value: index };
+                                    return { name: RenderRankToString(value), value: index };
                                 }),
                         },
                         //This Prompt Needs to Edit The message, may not be the best way to edit as you have to enter the message again
