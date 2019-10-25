@@ -2725,6 +2725,11 @@ triple-beam@^1.2.0, triple-beam@^1.3.0:
   resolved "https://registry.yarnpkg.com/triple-beam/-/triple-beam-1.3.0.tgz#a595214c7298db8339eeeee083e4d10bd8cb8dd9"
   integrity sha512-XrHUvV5HpdLmIj4uVMxHggLbFSZYIn7HEWsqePZcI50pco+MPqJ50wMGY794X7AOOhxOBAjbkqfAbEe/QMp2Lw==
 
+ts-events@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/ts-events/-/ts-events-3.3.1.tgz#2fad39198089722904ed4d2fc80a3e70f90c5fa9"
+  integrity sha512-dMnQ9uStT0nfKqfePU6HLx2jcRoCgc3qLHk6oh6Wgr3Parqf16bhWNOSuOC9oVlSDnIZ3TvfMnO+b9HOrhR8sA==
+
 ts-node-dev@^1.0.0-pre.41:
   version "1.0.0-pre.42"
   resolved "https://registry.yarnpkg.com/ts-node-dev/-/ts-node-dev-1.0.0-pre.42.tgz#1370603eaac171d6ed1d38d3f9879429122088ff"
