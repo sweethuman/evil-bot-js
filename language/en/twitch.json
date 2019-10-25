@@ -1,5 +1,6 @@
 {
   "welcome": "Welcome {{name}}!",
+  "welcomeWithRank": "Welcome {{rank}} {{name}}",
   "xprateCommand": "Lurker: 1 XP + 1 Coin every 10 Minutes; Talker: 1 XP + 1 Coin every Minute; Double Coins for Subscribers",
   "followAge_success": "@{{user}} You have been following for {{timeStamp}}!",
   "followAge_fail": "@{{user}} You are not following!",

@@ -9,6 +9,8 @@ import * as timedPoints from './modules/timedPoints';
 import i18next from 'i18next';
 import * as userMonitor from './modules/userMonitor';
 import * as rankManager from './modules/rankManager';
+import { twitchUsers } from './modules/userMonitor';
+import { ranks } from './modules/rankManager';
 
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
@@ -35,7 +37,18 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
             return;
         }
         if (!isUserIdPresent(msg.userInfo.userId!)) {
-            chatClient.say(channel, i18next.t('twitch:welcome', { name: msg.userInfo.displayName }));
+            const databaseUser = twitchUsers.get(msg.userInfo.userId!);
+            if (databaseUser == null || databaseUser.rank == null) {
+                chatClient.say(channel, i18next.t('twitch:welcome', { name: msg.userInfo.displayName }));
+            } else {
+                chatClient.say(
+                    channel,
+                    i18next.t('twitch:welcomeWithRank', {
+                        name: msg.userInfo.displayName,
+                        rank: ranks[databaseUser.rank].name,
+                    })
+                );
+            }
         }
         addTalker({ userId: msg.userInfo.userId!, displayName: msg.userInfo.displayName });
     });
