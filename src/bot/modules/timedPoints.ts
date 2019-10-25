@@ -28,6 +28,7 @@ async function updateTalkers() {
             {
                 xp: firebase.firestore.FieldValue.increment(1),
                 coins: firebase.firestore.FieldValue.increment(1),
+                lastSeenDisplayName: talker.displayName,
             },
             {
                 merge: true,
@@ -54,6 +55,7 @@ async function updateLurkers(username: string, twitchClient: TwitchClient) {
             {
                 xp: firebase.firestore.FieldValue.increment(1),
                 coins: firebase.firestore.FieldValue.increment(1),
+                lastSeenDisplayName: user.displayName,
             },
             {
                 merge: true,
