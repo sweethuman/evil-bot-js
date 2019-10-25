@@ -12,11 +12,8 @@ vorpal
         await firestore
             .collection('users')
             .doc(auth.currentUser!.uid)
-            .set(
-                {
-                    language: args.language,
-                },
-                { merge: true }
-            );
+            .update({
+                language: args.language,
+            });
         await i18next.changeLanguage(args.language);
     });

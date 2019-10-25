@@ -10,8 +10,8 @@ let lurkerTimeout: NodeJS.Timeout | null = null;
 
 //started when 'run' command is run, which means user is already logged in
 export async function start(username: string, twitchClient: TwitchClient) {
-    talkerTimeout = setInterval(updateTalkers, 60000);
-    lurkerTimeout = global.setInterval(updateLurkers, 60000 * 10, username, twitchClient);
+    talkerTimeout = setInterval(updateTalkers, 60000 * 0.25);
+    lurkerTimeout = global.setInterval(updateLurkers, 60000 * 0.3, username, twitchClient);
 }
 
 async function updateTalkers() {

@@ -49,12 +49,9 @@ export async function load() {
                             .doc(auth.currentUser!.uid)
                             .collection('twitchUsers')
                             .doc(user.id)
-                            .set(
-                                {
-                                    rank: index - 1,
-                                },
-                                { merge: true }
-                            );
+                            .update({
+                                rank: index - 1,
+                            });
                         foundRank = true;
                         updatedRank.post({ rank: ranks[index - 1], user });
                     }
@@ -68,12 +65,9 @@ export async function load() {
                         .doc(auth.currentUser!.uid)
                         .collection('twitchUsers')
                         .doc(user.id)
-                        .set(
-                            {
-                                rank: ranks.length - 1,
-                            },
-                            { merge: true }
-                        );
+                        .update({
+                            rank: ranks.length - 1,
+                        });
                     foundRank = true;
                     updatedRank.post({ rank: ranks[ranks.length - 1], user });
                     break;
