@@ -5,21 +5,38 @@ import firebase from 'firebase';
 
 // TODO add proper typing for twitchUsers
 // tslint:disable-next-line:no-any
-export const twitchUsers: Map<string, any> = new Map<string, any>();
+export const twitchUsers: Map<string, TwitchDatabaseUser> = new Map<string, TwitchDatabaseUser>();
+
+export interface TwitchDatabaseUser {
+    id: string;
+    xp: number;
+    coins: number;
+    rank?: number;
+    lastSeenDisplayName: string;
+}
 
 export function load() {
+    logger.debug('User Monitor Loaded');
     return firestore
         .collection('users')
         .doc(auth.currentUser!.uid)
         .collection('twitchUsers')
         .onSnapshot(
             (ref: QuerySnapshot) => {
+                logger.debug('User Update Received');
                 ref.docChanges().forEach(change => {
                     const { doc, type } = change;
+                    const dataBaseUser: TwitchDatabaseUser = {
+                        id: doc.id,
+                        xp: doc.data().xp,
+                        coins: doc.data().coins,
+                        rank: doc.data().rank,
+                        lastSeenDisplayName: doc.data().lastSeenDisplayName,
+                    };
                     if (type === 'added') {
-                        twitchUsers.set(doc.id, doc.data());
+                        twitchUsers.set(doc.id, dataBaseUser);
                     } else if (type === 'modified') {
-                        twitchUsers.set(doc.id, doc.data());
+                        twitchUsers.set(doc.id, dataBaseUser);
                     } else if (type === 'removed') {
                         twitchUsers.delete(doc.id);
                     }
