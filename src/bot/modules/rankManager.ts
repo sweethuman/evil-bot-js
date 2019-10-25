@@ -20,6 +20,8 @@ export interface Rank {
     name: string;
 }
 
+export let ranks: Rank[] = [];
+
 export async function load() {
     const ranksData = (await firestore
         .collection(`users/${auth.currentUser!.uid}/config`)
@@ -34,7 +36,7 @@ export async function load() {
         logger.debug(chalk.red("Ranks doesn't exist"));
         return;
     }
-    const ranks: Rank[] = ranksData.ranks;
+    ranks = ranksData.ranks;
     usersUpdated.attach(async data => {
         logger.silly(data.length.toString());
         for (const user of data) {
