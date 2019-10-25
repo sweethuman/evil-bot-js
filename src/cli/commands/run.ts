@@ -1,16 +1,13 @@
 import { auth, firestore } from '../../firebase';
-import chalk from 'chalk';
 import * as bot from '../../bot';
 import { vorpal } from '../vorpal';
 import i18next from 'i18next';
+import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
 
 vorpal
     .command('run', 'Runs the bot')
     .validate(() => {
-        if (auth.currentUser != null) {
-            return true;
-        }
-        return chalk.red('User is not logged in');
+        return combineLimiters(userIsLoggedIn, botIsNotRunning);
     })
     .action(async () => {
         //TODO remove duplicate code

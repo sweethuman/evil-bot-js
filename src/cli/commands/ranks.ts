@@ -4,14 +4,12 @@ import inquirer from 'inquirer';
 import { vorpal } from '../vorpal';
 import _ from 'lodash';
 import { Rank } from '../../bot/modules/rankManager';
+import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
 
 vorpal
     .command('ranks', 'Add or Edit your Ranks')
     .validate(() => {
-        if (auth.currentUser != null) {
-            return true;
-        }
-        return chalk.red('User is not logged in');
+        return combineLimiters(userIsLoggedIn, botIsNotRunning);
     })
     .action(async () => {
         //Gets Document to Be Edited

@@ -1,15 +1,12 @@
 import { vorpal } from '../vorpal';
 import i18next from 'i18next';
 import { auth, firestore } from '../../firebase';
-import chalk from 'chalk';
+import { userIsLoggedIn } from '../accessLimiters';
 
 vorpal
     .command('changeLanguage <language>', 'Changes program language')
     .validate(() => {
-        if (auth.currentUser != null) {
-            return true;
-        }
-        return chalk.red('User is not logged in');
+        return userIsLoggedIn();
     })
     .action(async args => {
         await firestore

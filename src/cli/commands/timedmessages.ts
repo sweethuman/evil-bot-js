@@ -3,14 +3,12 @@ import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
 import * as inquirer from 'inquirer';
 import _ from 'lodash';
+import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
 
 vorpal
     .command('timedmessages', 'Edit Timed Messages from the Bot')
     .validate(() => {
-        if (auth.currentUser != null) {
-            return true;
-        }
-        return chalk.red('User is not logged in');
+        return combineLimiters(userIsLoggedIn, botIsNotRunning);
     })
     .action(async () => {
         //Gets Document to Be Edited

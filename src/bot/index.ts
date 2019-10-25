@@ -12,7 +12,10 @@ import * as rankManager from './modules/rankManager';
 import { twitchUsers } from './modules/userMonitor';
 import { ranks } from './modules/rankManager';
 
+export let isBotRunning = false;
+
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
+    isBotRunning = true;
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
     //console.log(twitchClient);
 

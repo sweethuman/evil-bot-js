@@ -2,14 +2,12 @@ import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { vorpal } from '../vorpal';
+import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
 
 vorpal
     .command('credentials', 'Add or Edit your Twitch Credentials')
     .validate(() => {
-        if (auth.currentUser != null) {
-            return true;
-        }
-        return chalk.red('User is not logged in');
+        return combineLimiters(userIsLoggedIn, botIsNotRunning);
     })
     .action(async () => {
         const userDoc = await firestore
