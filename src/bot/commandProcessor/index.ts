@@ -5,6 +5,9 @@ import chalk from 'chalk';
 import { logger } from '../../winston';
 
 export interface ParsedCommand {
+    /**
+     * Only the command Identifier
+     */
     command: string;
     argumentsAsArray: string[];
     argumentsAsString: string;

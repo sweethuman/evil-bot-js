@@ -1,3 +1,7 @@
+/**
+ * Command for editing or adding user Ranks that are used when a Twitch User Levels up
+ */
+
 import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
 import inquirer from 'inquirer';

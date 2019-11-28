@@ -1,3 +1,7 @@
+/**
+ * Adds command that let's you add or edit your Twitch Credentials
+ */
+
 import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
