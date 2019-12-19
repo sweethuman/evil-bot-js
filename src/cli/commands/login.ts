@@ -4,6 +4,9 @@ import { auth } from '../../firebase';
 import chalk from 'chalk';
 import { vorpal } from '../vorpal';
 
+/**
+ * Logs in the user, you enter the email and then inquirer will ask you for the password
+ */
 vorpal.command('login <email>', 'Logs in the user').action(async args => {
     if (!validateEmail(args.email)) {
         vorpal.log('Email is not valid!');

@@ -4,9 +4,22 @@ import QuerySnapshot = firebase.firestore.QuerySnapshot;
 import firebase from 'firebase';
 import { SyncEvent } from 'ts-events';
 
+/**
+ * Module monitors users and database and triggers an event if any of them is changed
+ * Usually used to send chat notifications
+ */
+
 // TODO add proper typing for twitchUsers
 // tslint:disable-next-line:no-any
+/**
+ * Data Type with all the users in the database
+ * @type {Map<string, TwitchDatabaseUser>}
+ */
 export const twitchUsers: Map<string, TwitchDatabaseUser> = new Map<string, TwitchDatabaseUser>();
+/**
+ * Event that is triggered if any of the users is updated or a user is added
+ * @type {SyncEvent<TwitchDatabaseUser[]>}
+ */
 export const usersUpdated = new SyncEvent<TwitchDatabaseUser[]>();
 
 export interface TwitchDatabaseUser {
@@ -17,6 +30,10 @@ export interface TwitchDatabaseUser {
     lastSeenDisplayName: string;
 }
 
+/**
+ * Loads the user Monitor and subscribes to the database event of onSnapshot
+ * @returns {() => void}
+ */
 export function load() {
     logger.debug('User Monitor Loaded');
     return firestore

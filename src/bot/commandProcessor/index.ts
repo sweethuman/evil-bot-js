@@ -25,7 +25,7 @@ export interface CommandCallback {
 }
 
 const commands: Map<string, CommandCallback> = new Map<string, CommandCallback>();
-
+// TODO we should have command manager that is used globally or something
 export function addCommand(command: string, callback: CommandCallback) {
     commands.set(command, callback);
 }

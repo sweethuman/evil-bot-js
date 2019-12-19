@@ -5,6 +5,17 @@ import * as inquirer from 'inquirer';
 import _ from 'lodash';
 import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
 
+/**
+ * Let's you edit the timed messages for the bot through a menu selection actions to modify the data
+ * You can select the order in which messages are sent and the interval
+ * Current Actions:
+ * - Add a Message
+ * - View all Messages
+ * - Finish Editing
+ * And in case there are already messages:
+ * - Edit a Message
+ * - Remove a message
+ */
 vorpal
     .command('timedmessages', 'Edit Timed Messages from the Bot')
     .validate(() => {
@@ -44,7 +55,10 @@ vorpal
                 message: 'The Order In Which Messages are Sent',
                 //TODO Test: if messageOrder is bigger than choices array
                 default: messagesData.messageOrder != null ? messagesData.messageOrder : 0,
-                choices: [{ name: 'Random Order', value: 0 }, { name: 'The Order In Which They Appear', value: 1 }],
+                choices: [
+                    { name: 'Random Order', value: 0 },
+                    { name: 'The Order In Which They Appear', value: 1 },
+                ],
             },
         ]);
         messagesData = { ...messagesData, ...editPropResults };

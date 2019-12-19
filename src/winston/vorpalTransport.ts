@@ -2,6 +2,10 @@ import TransportStream from 'winston-transport';
 import { vorpal } from '../cli/vorpal';
 import { MESSAGE } from 'triple-beam';
 
+/**
+ * Define a Vorpal Transport for Winston so everything that is logged can go through vorpal.log
+ * It has to go through vorpal.log so it won't disturb the CLI and input
+ */
 export class VorpalTransport extends TransportStream {
     constructor(opts?: TransportStream.TransportStreamOptions) {
         super(opts);

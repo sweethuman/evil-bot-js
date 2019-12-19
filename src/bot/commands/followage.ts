@@ -5,6 +5,16 @@ import TwitchClient from 'twitch';
 import { logger } from '../../winston';
 import i18next from 'i18next';
 
+/**
+ * Shows for how long the user has been following the channel
+ * @param {string} channel
+ * @param {string} user
+ * @param {string} message
+ * @param {PrivateMessage} msg
+ * @param {ParsedCommand} command
+ * @param {TwitchClient} twitchClient
+ * @returns {Promise<string>}
+ */
 const command: CommandCallback = async (
     channel: string,
     user: string,

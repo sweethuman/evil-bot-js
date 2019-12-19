@@ -1,5 +1,14 @@
 /**
  * Command for editing or adding user Ranks that are used when a Twitch User Levels up
+ * A Menu is presented with different actions that you can do to edit the ranks
+ * Current menu options:
+ * - Add Rank
+ * - View All Ranks
+ * - Finish Editing
+ * And in case there are ranks already:
+ * - Edit Rank
+ * - Remove Rank
+ * A rank usually contains the name and number of experience points needed to obtain it
  */
 
 import { auth, firestore } from '../../firebase';
@@ -9,7 +18,7 @@ import { vorpal } from '../vorpal';
 import _ from 'lodash';
 import { Rank } from '../../bot/modules/rankManager';
 import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
-
+// TODO split actions into simple functions
 vorpal
     .command('ranks', 'Add or Edit your Ranks')
     .validate(() => {

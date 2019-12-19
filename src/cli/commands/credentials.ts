@@ -8,6 +8,10 @@ import inquirer from 'inquirer';
 import { vorpal } from '../vorpal';
 import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
 
+/**
+ * Edit Twitch Credentials
+ * Currently you can edit Client ID, Access Token and Twitch Username
+ */
 vorpal
     .command('credentials', 'Add or Edit your Twitch Credentials')
     .validate(() => {

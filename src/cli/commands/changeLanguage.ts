@@ -3,6 +3,10 @@ import i18next from 'i18next';
 import { auth, firestore } from '../../firebase';
 import { userIsLoggedIn } from '../accessLimiters';
 
+/**
+ * Define Command that changes language
+ * <language> option is the folder names in language folder(ex: 'en', 'ro')
+ */
 vorpal
     .command('changeLanguage <language>', 'Changes program language')
     .validate(() => {

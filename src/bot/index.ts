@@ -12,8 +12,13 @@ import * as rankManager from './modules/rankManager';
 import { twitchUsers } from './modules/userMonitor';
 import { ranks } from './modules/rankManager';
 
+/**
+ * Variable Used globally to check the state of the bot
+ * It Should only be set in this module, nowhere else!
+ * @type {boolean}
+ */
 export let isBotRunning = false;
-
+// TODO Function does too many things at once and behaviour is not explicit
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     isBotRunning = true;
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);

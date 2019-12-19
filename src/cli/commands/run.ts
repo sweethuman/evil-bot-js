@@ -4,6 +4,9 @@ import { vorpal } from '../vorpal';
 import i18next from 'i18next';
 import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
 
+/**
+ * Actually starts the bot
+ */
 vorpal
     .command('run', 'Runs the bot')
     .validate(() => {

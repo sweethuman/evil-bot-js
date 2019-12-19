@@ -4,6 +4,10 @@ import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
 import { vorpal } from '../vorpal';
 
+/**
+ * Registers a new user
+ * only email and password is needed
+ */
 vorpal.command('register <email>', 'Registers a new user').action(async args => {
     if (!validateEmail(args.email)) {
         vorpal.log('Email is not valid!');

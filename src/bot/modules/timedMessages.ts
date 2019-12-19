@@ -6,6 +6,8 @@ import { logger } from '../../winston';
 
 let intervalTimeout: NodeJS.Timeout | null = null;
 let messageCounter: number;
+// TODO all modules start function should be named load because it load the module
+// TODO does too many things at one, needs to be split into multiple small functions
 export async function start(channel: string, chatClient: ChatClient) {
     messageCounter = -1;
     const messagesDoc = await firestore

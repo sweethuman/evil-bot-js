@@ -1,3 +1,6 @@
+/**
+ * Imports all command modules so they can add themselves
+ */
 import './credentials';
 import './loggedin';
 import './login';

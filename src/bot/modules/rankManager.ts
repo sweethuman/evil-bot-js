@@ -4,6 +4,10 @@ import { AsyncEvent } from 'ts-events';
 import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
 
+/**
+ * Event Triggered in case any of the users acquires a new rank
+ * @type {AsyncEvent<UpdatedUserRank>}
+ */
 export const updatedRank = new AsyncEvent<UpdatedUserRank>();
 // updates rank
 // stores new rank
@@ -22,11 +26,19 @@ export interface Rank {
 
 export let ranks: Rank[] = [];
 
+/**
+ * Loads the Rank Manager
+ * @returns {Promise<void>}
+ */
+
+// TODO does too many things in one function, better split it into multiple small functions
 export async function load() {
-    const ranksData = (await firestore
-        .collection(`users/${auth.currentUser!.uid}/config`)
-        .doc('ranks')
-        .get()).data();
+    const ranksData = (
+        await firestore
+            .collection(`users/${auth.currentUser!.uid}/config`)
+            .doc('ranks')
+            .get()
+    ).data();
     if (
         ranksData == null ||
         ranksData.ranks == null ||

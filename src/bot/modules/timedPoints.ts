@@ -9,12 +9,18 @@ let talkerTimeout: NodeJS.Timeout | null = null;
 let lurkerTimeout: NodeJS.Timeout | null = null;
 
 //started when 'run' command is run, which means user is already logged in
+// TODO all modules start function should be named load because it load the module
 export async function start(username: string, twitchClient: TwitchClient) {
     talkerTimeout = setInterval(updateTalkers, 60000 * 0.25);
     lurkerTimeout = global.setInterval(updateLurkers, 60000 * 0.3, username, twitchClient);
 }
 
-async function updateTalkers() {
+/**
+ * Gets Talkers from Talker Tracker
+ * Usually run once per minute
+ * @returns {Promise<void>}
+ */
+async function updateTalkers(): Promise<void> {
     logger.debug('Updating Talkers');
     const talkers = clearTalkers();
     const batch = firestore.batch();
@@ -39,7 +45,14 @@ async function updateTalkers() {
     logger.debug('Updated Talkers');
 }
 
-async function updateLurkers(username: string, twitchClient: TwitchClient) {
+/**
+ * Will get lurkers from chatters api and update their points
+ * Usually run every 10 minutes
+ * @param {string} username
+ * @param {TwitchClient} twitchClient
+ * @returns {Promise<void>}
+ */
+async function updateLurkers(username: string, twitchClient: TwitchClient): Promise<void> {
     logger.debug('Updating Lurkers');
     const chatters = await twitchClient.unsupported.getChatters(username);
     // TODO filter chatters with filter module

@@ -1,3 +1,11 @@
+/**
+ * Module Used to Track Talkers
+ * Talkers are people who Talk on the Chat
+ */
+
+/**
+ * Talker user Interface
+ */
 export interface TalkerUser {
     userId: string;
     displayName: string;
