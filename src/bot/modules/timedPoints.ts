@@ -9,8 +9,7 @@ let talkerTimeout: NodeJS.Timeout | null = null;
 let lurkerTimeout: NodeJS.Timeout | null = null;
 
 //started when 'run' command is run, which means user is already logged in
-// TODO all modules start function should be named load because it load the module
-export async function start(username: string, twitchClient: TwitchClient) {
+export async function load(username: string, twitchClient: TwitchClient) {
     talkerTimeout = setInterval(updateTalkers, 60000 * 0.25);
     lurkerTimeout = global.setInterval(updateLurkers, 60000 * 0.3, username, twitchClient);
 }
@@ -79,7 +78,7 @@ async function updateLurkers(username: string, twitchClient: TwitchClient): Prom
     logger.debug('Updated Lurkers');
 }
 
-export function stop(): void {
+export function unload(): void {
     if (talkerTimeout == null || lurkerTimeout == null) {
         logger.error(chalk.red("Timed Points Module hasn't been started"));
         return;

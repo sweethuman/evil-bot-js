@@ -28,8 +28,8 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
     await chatClient.connect();
     await chatClient.waitForRegistration();
     await chatClient.join(twitchUsername);
-    await timedMessagesModule.start('#' + twitchUsername, chatClient);
-    await timedPoints.start(twitchUsername, twitchClient);
+    await timedMessagesModule.load('#' + twitchUsername, chatClient);
+    await timedPoints.load(twitchUsername, twitchClient);
     userMonitor.load();
     await rankManager.load();
     rankManager.updatedRank.attach(data => {

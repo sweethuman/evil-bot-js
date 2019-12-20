@@ -31,8 +31,8 @@ export let ranks: Rank[] = [];
  * @returns {Promise<void>}
  */
 
-// TODO does too many things in one function, better split it into multiple small functions
 export async function load() {
+    //Load Rank Config
     const ranksData = (
         await firestore
             .collection(`users/${auth.currentUser!.uid}/config`)
@@ -49,42 +49,47 @@ export async function load() {
         return;
     }
     ranks = ranksData.ranks;
-    usersUpdated.attach(async data => {
-        logger.silly(data.length.toString());
-        for (const user of data) {
-            let foundRank = false;
-            for (let index = 0; index < ranks.length; index++) {
-                if (user.xp < ranks[index].requiredXp && index > 0) {
-                    if (user.rank == null || user.rank !== index - 1) {
-                        await firestore
-                            .collection('users')
-                            .doc(auth.currentUser!.uid)
-                            .collection('twitchUsers')
-                            .doc(user.id)
-                            .update({
-                                rank: index - 1,
-                            });
-                        foundRank = true;
-                        updatedRank.post({ rank: ranks[index - 1], user });
-                    }
-                    break;
-                }
-            }
-            if (!foundRank && user.xp >= ranks[ranks.length - 1].requiredXp) {
-                if (user.rank == null || user.rank !== ranks.length - 1) {
+
+    usersUpdated.attach(announceUpdatedRankUsers);
+}
+
+async function announceUpdatedRankUsers(data: TwitchDatabaseUser[]) {
+    logger.silly(data.length.toString());
+    // Check for Updated user/users if rank changed
+    for (const user of data) {
+        let foundRank = false;
+        for (let index = 0; index < ranks.length; index++) {
+            if (user.xp < ranks[index].requiredXp && index > 0) {
+                if (user.rank == null || user.rank !== index - 1) {
+                    // TODO instead of update make a batched write
                     await firestore
                         .collection('users')
                         .doc(auth.currentUser!.uid)
                         .collection('twitchUsers')
                         .doc(user.id)
                         .update({
-                            rank: ranks.length - 1,
+                            rank: index - 1,
                         });
                     foundRank = true;
-                    updatedRank.post({ rank: ranks[ranks.length - 1], user });
-                    break;
+                    updatedRank.post({ rank: ranks[index - 1], user });
                 }
+                break;
             }
         }
-    });
+        if (!foundRank && user.xp >= ranks[ranks.length - 1].requiredXp) {
+            if (user.rank == null || user.rank !== ranks.length - 1) {
+                await firestore
+                    .collection('users')
+                    .doc(auth.currentUser!.uid)
+                    .collection('twitchUsers')
+                    .doc(user.id)
+                    .update({
+                        rank: ranks.length - 1,
+                    });
+                foundRank = true;
+                updatedRank.post({ rank: ranks[ranks.length - 1], user });
+                break;
+            }
+        }
+    }
 }
