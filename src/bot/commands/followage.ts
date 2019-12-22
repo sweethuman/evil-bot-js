@@ -1,4 +1,4 @@
-import { addCommand, CommandCallback, ParsedCommand } from '../commandProcessor';
+import { addCommand, CommandCallback, ParsedCommand } from '../commandEngine';
 import { PrivateMessage } from 'twitch-chat-client';
 import chalk from 'chalk';
 import TwitchClient from 'twitch';

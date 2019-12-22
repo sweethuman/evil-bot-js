@@ -1,4 +1,4 @@
-import { addCommand, CommandCallback } from '../commandProcessor';
+import { addCommand, CommandCallback } from '../commandEngine';
 import i18next from 'i18next';
 
 /**

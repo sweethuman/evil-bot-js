@@ -1,6 +1,6 @@
 import TwitchClient from 'twitch';
 import ChatClient, { PrivateMessage } from 'twitch-chat-client';
-import { executeCommands } from './commandProcessor';
+import { executeCommands } from './commandEngine';
 import './commands';
 import { isUserIdPresent } from './trackers/presenceTracker';
 import { addTalker } from './trackers/talkerTracker';
