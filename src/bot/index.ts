@@ -11,6 +11,7 @@ import * as userMonitor from './modules/userMonitor';
 import * as rankManager from './modules/rankManager';
 import { twitchUsers } from './modules/userMonitor';
 import { ranks } from './modules/rankManager';
+import { logger } from '../winston';
 
 /**
  * Variable Used globally to check the state of the bot
@@ -19,6 +20,7 @@ import { ranks } from './modules/rankManager';
  */
 export let isBotRunning = false;
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
+    logger.debug('Starting Bot');
     isBotRunning = true;
     const { twitchClient, chatClient } = await initializeClient(twitchUsername, clientId, accessToken);
     await loadModules(twitchUsername, chatClient, twitchClient);
@@ -31,21 +33,29 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
 }
 
 async function initializeClient(twitchUsername: string, clientId: string, accessToken: string) {
+    logger.debug('Initializing client!');
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
     const chatClient = await ChatClient.forTwitchClient(twitchClient);
+    logger.debug('Connecting chat client!');
     await chatClient.connect();
-    await chatClient.waitForRegistration();
-    await chatClient.join(twitchUsername);
+    chatClient.onRegister(() => {
+        chatClient.join(twitchUsername);
+        logger.debug(`Joined channel ${twitchUsername}`);
+    });
+    logger.debug('Finishing Initialization');
     return { twitchClient, chatClient };
 }
 
 async function loadModules(twitchUsername: string, chatClient: ChatClient, twitchClient: TwitchClient) {
+    logger.debug('Loding Modules');
     await timedMessagesModule.load('#' + twitchUsername, chatClient);
     await timedPoints.load(twitchUsername, twitchClient);
     userMonitor.load();
     await rankManager.load();
+    logger.debug('Modules Loaded!');
 }
 function attachUpdatedRankNotification(twitchUsername: string, chatClient: ChatClient) {
+    logger.debug('Attaching Update Rank Notification.');
     rankManager.updatedRank.attach(data => {
         chatClient.say(
             twitchUsername,
