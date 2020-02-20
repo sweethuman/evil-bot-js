@@ -9,8 +9,6 @@ import { SyncEvent } from 'ts-events';
  * Usually used to send chat notifications
  */
 
-// TODO add proper typing for twitchUsers
-// tslint:disable-next-line:no-any
 /**
  * Data Type with all the users in the database
  * @type {Map<string, TwitchDatabaseUser>}
