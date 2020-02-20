@@ -47,9 +47,9 @@ export async function executeCommands(
 
 function parser(input: string): void | ParsedCommand {
     if (!input.startsWith('!') || input.length <= 1) return;
-    const splitted = _.trimStart(input, '!').split(' ');
-    const command = splitted[0];
-    const argumentsAsArray: string[] = _.slice(splitted, 1, splitted.length);
+    const split = _.trimStart(input, '!').split(' ');
+    const command = split[0];
+    const argumentsAsArray: string[] = _.slice(split, 1, split.length);
     const argumentsAsString = _.trimStart(input, '!' + command + ' ');
 
     return {
