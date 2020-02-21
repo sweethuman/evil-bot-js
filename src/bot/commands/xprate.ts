@@ -1,13 +1,17 @@
-import { addCommand, CommandCallback } from '../commandEngine';
+import { AbstractCommand } from '../commandEngine';
 import i18next from 'i18next';
+import { SubCommand } from '../commandEngine/decorators';
 
 /**
  * Shows the xp rate of current config
  * Which means how much xp is given per how much time and for what actions such as lurking or talking
  * @returns {string}
  */
-const command: CommandCallback = () => {
-    return i18next.t('twitch:xprateCommand');
-};
+export class XpRateCommand extends AbstractCommand {
+    name = 'xprate';
 
-addCommand('xprate', command);
+    @SubCommand
+    xprate(): string {
+        return i18next.t('twitch:xprateCommand');
+    }
+}
