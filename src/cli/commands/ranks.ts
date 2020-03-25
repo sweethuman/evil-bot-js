@@ -16,8 +16,8 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { vorpal } from '../vorpal';
 import _ from 'lodash';
-import { Rank } from '../../bot/modules/rankManager';
 import { botIsNotRunning, combineLimiters, userIsLoggedIn } from '../accessLimiters';
+import { Rank } from '../../bot/modules/interfaces';
 // TODO split actions into simple functions
 vorpal
     .command('ranks', 'Add or Edit your Ranks')

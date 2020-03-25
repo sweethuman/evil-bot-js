@@ -1,6 +1,6 @@
 import { UserLevel } from './types';
 import { ArgumentsParam } from './decorators';
-import { CommandCallback } from './engine';
+import { CommandCallback } from './interfaces';
 
 export class CommandObject {
     constructor(

@@ -3,6 +3,7 @@ import { logger } from '../../winston';
 import QuerySnapshot = firebase.firestore.QuerySnapshot;
 import firebase from 'firebase';
 import { SyncEvent } from 'ts-events';
+import { TwitchDatabaseUser } from './interfaces';
 
 /**
  * Module monitors users and database and triggers an event if any of them is changed
@@ -19,14 +20,6 @@ export const twitchUsers: Map<string, TwitchDatabaseUser> = new Map<string, Twit
  * @type {SyncEvent<TwitchDatabaseUser[]>}
  */
 export const usersUpdated = new SyncEvent<TwitchDatabaseUser[]>();
-
-export interface TwitchDatabaseUser {
-    id: string;
-    xp: number;
-    coins: number;
-    rank?: number;
-    lastSeenDisplayName: string;
-}
 
 /**
  * Loads the user Monitor and subscribes to the database event of onSnapshot

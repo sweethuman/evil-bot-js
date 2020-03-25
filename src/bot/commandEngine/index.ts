@@ -1,2 +1,2 @@
 export { AbstractCommand } from './abstractCommand';
-export { executeCommands, AdditionalData } from './engine';
+export { executeCommands } from './engine';

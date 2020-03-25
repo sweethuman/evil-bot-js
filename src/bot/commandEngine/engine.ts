@@ -16,28 +16,7 @@ import { CommandObject } from './commandObject';
 import { ArgumentType, UserLevel } from './types';
 import { AbstractCommand } from './abstractCommand';
 import { SubCommandDefineError } from '../../errors/subCommandDefine';
-
-export interface AdditionalData {
-    channel: string;
-    user: string;
-    message: string;
-    msg: PrivateMessage;
-    parsedCommand: ParsedCommand;
-    twitchClient: TwitchClient;
-}
-
-export interface ParsedCommand {
-    /**
-     * Only the command Identifier
-     */
-    command: string;
-    argumentsAsArray: string[];
-    argumentsAsString: string;
-}
-
-export interface CommandCallback {
-    (additionalData: AdditionalData, ...args: Array<string | number | HelixUser>): string | Promise<string>;
-}
+import { AdditionalData, ParsedCommand } from './interfaces';
 
 const commands: {
     [index: string]: CommandObject | { [index: string]: CommandObject };

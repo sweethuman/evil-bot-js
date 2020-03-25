@@ -1,8 +1,9 @@
-import { AbstractCommand, AdditionalData } from '../commandEngine';
+import { AbstractCommand } from '../commandEngine';
 import chalk from 'chalk';
 import { logger } from '../../winston';
 import i18next from 'i18next';
 import { SubCommand } from '../commandEngine/decorators';
+import { AdditionalData } from '../commandEngine/interfaces';
 
 /**
  * Shows for how long the user has been following the channel

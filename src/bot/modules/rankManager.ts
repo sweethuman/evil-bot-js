@@ -1,8 +1,9 @@
-import { TwitchDatabaseUser, usersUpdated } from './userMonitor';
+import { usersUpdated } from './userMonitor';
 import { logger } from '../../winston';
 import { AsyncEvent } from 'ts-events';
 import { auth, firestore } from '../../firebase';
 import chalk from 'chalk';
+import { Rank, TwitchDatabaseUser, UpdatedUserRank } from './interfaces';
 
 /**
  * Event Triggered in case any of the users acquires a new rank
@@ -13,16 +14,6 @@ export const updatedRank = new AsyncEvent<UpdatedUserRank>();
 // stores new rank
 // checks if rank exists
 // emits rank event is user rank is updated
-
-export interface UpdatedUserRank {
-    rank: Rank;
-    user: TwitchDatabaseUser;
-}
-
-export interface Rank {
-    requiredXp: number;
-    name: string;
-}
 
 export let ranks: Rank[] = [];
 

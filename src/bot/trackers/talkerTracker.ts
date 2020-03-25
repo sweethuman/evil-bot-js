@@ -3,13 +3,11 @@
  * Talkers are people who Talk on the Chat
  */
 
+import { TalkerUser } from './interfaces';
+
 /**
  * Talker user Interface
  */
-export interface TalkerUser {
-    userId: string;
-    displayName: string;
-}
 
 let talkers: Map<string, TalkerUser> = new Map<string, TalkerUser>();
 
