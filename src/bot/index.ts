@@ -23,7 +23,6 @@ export let isBotRunning = false;
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     logger.debug('Starting Bot');
     isBotRunning = true;
-    //TODO CODE 2
     loadCommands();
     const { twitchClient, chatClient } = await initializeClient(twitchUsername, clientId, accessToken);
     await loadModules(twitchUsername, chatClient, twitchClient);
@@ -76,7 +75,7 @@ async function executeAndReplyToCommand(
     chatClient: ChatClient
 ) {
     const commandMessage = await executeCommands(channel, user, message, msg, twitchClient);
-    if (commandMessage != null) {
+    if (commandMessage != null && commandMessage.length !== 0) {
         chatClient.say(channel, commandMessage);
         return;
     }

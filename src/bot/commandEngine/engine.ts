@@ -17,6 +17,7 @@ import { ArgumentType, UserLevel } from './types';
 import { AbstractCommand } from './abstractCommand';
 import { SubCommandDefineError } from '../../errors/subCommandDefine';
 import { AdditionalData, ParsedCommand } from './interfaces';
+import i18next from 'i18next';
 
 const commands: {
     [index: string]: CommandObject | { [index: string]: CommandObject };
@@ -47,12 +48,11 @@ export async function executeCommands(
     message: string,
     msg: PrivateMessage,
     twitchClient: TwitchClient
-): Promise<void | string> {
+): Promise<string> {
     const parsedCommand = parser(message);
-    if (parsedCommand == null) return;
-    //TODO CODE 3
-    const commandObject = commands[parsedCommand.command];
-    if (commandObject == null) return;
+    if (parsedCommand == null) return '';
+    const registeredValue = commands[parsedCommand.command];
+    if (registeredValue == null) return '';
     logger.debug(chalk.blue(parsedCommand.command) + chalk.yellow(' command called'));
     const additionalData: AdditionalData = {
         channel,
@@ -62,20 +62,22 @@ export async function executeCommands(
         twitchClient,
         parsedCommand,
     };
-    if (commandObject instanceof CommandObject) {
-        return commandInjector(commandObject, additionalData);
-    } else if (typeof commandObject === 'object') {
+    if (registeredValue instanceof CommandObject) {
+        return commandInjector(registeredValue, additionalData);
+    } else if (typeof registeredValue === 'object') {
         if (parsedCommand.argumentsAsArray.length === 0) {
-            //TODO CODE 1
-            return 'Subcommand not specified!';
+            return i18next.t('common:missingSubcommand', { command: parsedCommand.command });
         }
-        const subCommand = commandObject[parsedCommand.argumentsAsArray[0]];
+        const subCommand = registeredValue[parsedCommand.argumentsAsArray[0]];
         if (subCommand == null) {
-            //TODO CODE 1
-            return 'Subcommand does not exist';
+            return i18next.t('common:wrongSubcommand', {
+                subcommand: parsedCommand.argumentsAsArray[0],
+                command: parsedCommand.command,
+            });
         }
         return commandInjector(subCommand, additionalData);
     }
+    return '';
 }
 
 function isAllowed(
@@ -102,8 +104,8 @@ function isAllowed(
  * @param commandObject
  * @param additionalData
  */
-async function commandInjector(commandObject: CommandObject, additionalData: AdditionalData): Promise<string | void> {
-    const { msg, parsedCommand: parsedCommand, twitchClient } = additionalData;
+async function commandInjector(commandObject: CommandObject, additionalData: AdditionalData): Promise<string> {
+    const { msg, parsedCommand, twitchClient } = additionalData;
     if (
         commandObject.permissionLevel != null &&
         !isAllowed(
@@ -115,40 +117,37 @@ async function commandInjector(commandObject: CommandObject, additionalData: Add
             msg.userInfo.badges.has('broadcaster')
         )
     ) {
-        return;
+        return '';
     }
     const args: Array<string | number | HelixUser> = [];
     if (commandObject.args != null) {
         if (commandObject.args.size <= parsedCommand.argumentsAsArray.length - (commandObject.subCommand ? 1 : 0)) {
             let i = commandObject.subCommand ? 1 : 0;
-            for (const [key, value] of commandObject.args) {
-                if (value === ArgumentType.String) {
+            for (const [argName, argType] of commandObject.args) {
+                if (argType === ArgumentType.String) {
                     args.push(parsedCommand.argumentsAsArray[i]);
-                } else if (value === ArgumentType.Number) {
+                } else if (argType === ArgumentType.Number) {
                     const convertedNumber = Number.parseInt(parsedCommand.argumentsAsArray[i], 10);
                     if (isNaN(convertedNumber)) {
-                        //TODO CODE 2
-                        //TODO CODE 1
-                        return `${key} Argument is not a Number`;
+                        return i18next.t('common:argumentNotANumber', {
+                            argument: argName,
+                            value: parsedCommand.argumentsAsArray[i],
+                        });
                     }
                     args.push(convertedNumber);
-                } else if (value === ArgumentType.TwitchUser) {
+                } else if (argType === ArgumentType.TwitchUser) {
                     const user = await twitchClient.helix.users.getUserByName(parsedCommand.argumentsAsArray[i]);
                     if (user == null) {
-                        //TODO CODE 1
-                        return 'There is no user with that username';
+                        return i18next.t('twitch:missingUsername', { username: parsedCommand.argumentsAsArray[i] });
                     }
                     args.push(user);
                 } else {
-                    //TODO CODE 2
-                    //Maybe I should a type Check of Support implementation and it's response somewhere else
-                    return 'Arguments type included in command not supported';
+                    return i18next.t('common:commandArgumentNotSupported');
                 }
                 i++;
             }
         } else {
-            //TODO CODE 1
-            return 'Not Enough Arguments';
+            return i18next.t('common:notEnoughArguments', { command: parsedCommand.command });
         }
     }
     return commandObject.command(additionalData, ...args);

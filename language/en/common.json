@@ -1,3 +1,7 @@
 {
-
+  "commandArgumentNotSupported": "Arguments type included in command not supported",
+  "argumentNotANumber": "{{argument}} with value {{value}} is not a number!",
+  "notEnoughArguments": "Not enough arguments, do !help {{command}}",
+  "wrongSubcommand": "Subcommand {{subcommand}} does not exist on !{{command}}",
+  "missingSubcommand": "Subcommand for command {{command}} not specified"
 }
