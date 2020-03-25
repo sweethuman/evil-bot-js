@@ -12,6 +12,7 @@ import * as rankManager from './modules/rankManager';
 import { twitchUsers } from './modules/userMonitor';
 import { ranks } from './modules/rankManager';
 import { logger } from '../winston';
+import { loadCommands } from './commandEngine/engine';
 
 /**
  * Variable Used globally to check the state of the bot
@@ -22,6 +23,8 @@ export let isBotRunning = false;
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
     logger.debug('Starting Bot');
     isBotRunning = true;
+    //TODO CODE 2
+    loadCommands();
     const { twitchClient, chatClient } = await initializeClient(twitchUsername, clientId, accessToken);
     await loadModules(twitchUsername, chatClient, twitchClient);
     attachUpdatedRankNotification(twitchUsername, chatClient);

@@ -1,1 +1,2 @@
-export { ParsedCommand, CommandCallback, addCommand, executeCommands } from './engine';
+export { AbstractCommand } from './abstractCommand';
+export { executeCommands, AdditionalData } from './engine';
