@@ -23,6 +23,10 @@ const commands: {
     [index: string]: CommandObject | { [index: string]: CommandObject };
 } = {};
 
+/**
+ * It loads commands from the Abstract Command class Objects and turns them into more easily readable
+ * CommandObjects to be read and interpreted by the engine
+ */
 export function loadCommands(): void {
     logger.debug('Loading commands');
     for (const [key, value] of Object.entries(Commands)) {
@@ -42,6 +46,9 @@ export function loadCommands(): void {
     logger.debug('Commands loaded');
 }
 
+/**
+ * Given a message with the appropriate data, if it is a command, it tries to execute it
+ */
 export async function executeCommands(
     channel: string,
     user: string,
@@ -49,8 +56,8 @@ export async function executeCommands(
     msg: PrivateMessage,
     twitchClient: TwitchClient
 ): Promise<string> {
+    if (!message.startsWith('!') || message.length <= 1) return '';
     const parsedCommand = parser(message);
-    if (parsedCommand == null) return '';
     const registeredValue = commands[parsedCommand.command];
     if (registeredValue == null) return '';
     logger.debug(chalk.blue(parsedCommand.command) + chalk.yellow(' command called'));
@@ -80,6 +87,15 @@ export async function executeCommands(
     return '';
 }
 
+/**
+ * Checks if user is allowed to run the command
+ * @param permissionLevel The Minimum Permission Level of The Command
+ * @param vip If User is vip
+ * @param subscriber If User is subscriber
+ * @param moderator If User is moderator
+ * @param founder If User is founder
+ * @param broadcaster If User is broadcaster
+ */
 function isAllowed(
     permissionLevel: UserLevel,
     vip: boolean,
@@ -100,9 +116,8 @@ function isAllowed(
 }
 
 /**
- *
- * @param commandObject
- * @param additionalData
+ * It takes a CommandObject and the additional parsed data and handles Permission Checking, And Argument Injection for
+ * the command and converting everything into the expected type for the actual Command Handler
  */
 async function commandInjector(commandObject: CommandObject, additionalData: AdditionalData): Promise<string> {
     const { msg, parsedCommand, twitchClient } = additionalData;
@@ -153,6 +168,12 @@ async function commandInjector(commandObject: CommandObject, additionalData: Add
     return commandObject.command(additionalData, ...args);
 }
 
+/**
+ * Instantiates a CommandObject
+ * @param funcName The function name in the `commandClass` that has attached to it all the properties that define a "COMMAND"
+ * @param commandClass The class that coins everything including the function and to which the function is bound to
+ * @param isSubCommand If the given is a SubCommand of a more general parent command
+ */
 function instantiateCommandObject(
     funcName: string,
     commandClass: AbstractCommand,
@@ -174,8 +195,11 @@ function instantiateCommandObject(
     }
 }
 
-function parser(input: string): void | ParsedCommand {
-    if (!input.startsWith('!') || input.length <= 1) return;
+/**
+ * From a string it returns the command from text into parsed format
+ * @param input String to parse into standard command format
+ */
+function parser(input: string): ParsedCommand {
     const split = _.trimStart(input, '!').split(' ');
     const command = split[0];
     const argumentsAsArray: string[] = _.slice(split, 1, split.length);
