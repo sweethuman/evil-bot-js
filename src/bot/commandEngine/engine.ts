@@ -13,7 +13,7 @@ import {
     subCommandNameKey,
 } from './decorators';
 import { CommandObject } from './commandObject';
-import { ArgumentType, UserLevel } from './types';
+import { ArgumentType, UserLevel } from './enums';
 import { AbstractCommand } from './abstractCommand';
 import { SubCommandDefineError } from '../../errors/subCommandDefine';
 import { AdditionalData, ParsedCommand } from './interfaces';
@@ -165,7 +165,7 @@ async function commandInjector(commandObject: CommandObject, additionalData: Add
             return i18next.t('common:notEnoughArguments', { command: parsedCommand.command });
         }
     }
-    return commandObject.command(additionalData, ...args);
+    return commandObject.handler(additionalData, ...args);
 }
 
 /**

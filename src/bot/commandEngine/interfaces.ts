@@ -19,6 +19,6 @@ export interface ParsedCommand {
     argumentsAsString: string;
 }
 
-export interface CommandCallback {
+export interface CommandHandler {
     (additionalData: AdditionalData, ...args: Array<string | number | HelixUser>): string | Promise<string>;
 }

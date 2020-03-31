@@ -1,10 +1,10 @@
-import { UserLevel } from './types';
+import { UserLevel } from './enums';
 import { ArgumentsParam } from './decorators';
-import { CommandCallback } from './interfaces';
+import { CommandHandler } from './interfaces';
 
 export class CommandObject {
     constructor(
-        readonly command: CommandCallback,
+        readonly handler: CommandHandler,
         readonly args?: ArgumentsParam,
         readonly permissionLevel?: UserLevel,
         readonly subCommand = false

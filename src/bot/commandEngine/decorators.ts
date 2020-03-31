@@ -1,6 +1,6 @@
 import { AbstractCommand } from './abstractCommand';
 import 'reflect-metadata';
-import { ArgumentType, UserLevel } from './types';
+import { ArgumentType, UserLevel } from './enums';
 import { SubCommandDefineError } from '../../errors/subCommandDefine';
 
 export const subCommandNameKey = Symbol('subcommand');
@@ -43,7 +43,7 @@ export function PermissionLevel(level: UserLevel): MethodDecorator {
 
 export type ArgumentsParam = Map<string, ArgumentType>;
 
-export function Arguments(args: Array<[string, ArgumentType]>): MethodDecorator {
+export function Arguments(...args: Array<[string, ArgumentType]>): MethodDecorator {
     const newArguments: ArgumentsParam = new Map(args);
     return Reflect.metadata(argumentsSpecKey, newArguments);
 }
