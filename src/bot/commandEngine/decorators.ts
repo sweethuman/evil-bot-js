@@ -8,6 +8,11 @@ export const commandStorageKey = Symbol('commandStorageKey');
 export const permissionLevelKey = Symbol('permission');
 export const argumentsSpecKey = Symbol('arguments');
 
+/**
+ * Decorator to declare that the function is a command
+ * `@SubCommand` if function is the only handler for the command defined by the class
+ * `@SubCommand(name)` if the function is the handler for the subcommand "name" of the command defined by the class
+ */
 function SubCommand(name: string): MethodDecorator;
 function SubCommand(target: AbstractCommand, propertyKey: string, descriptor: PropertyDescriptor): void;
 function SubCommand(
@@ -37,12 +42,22 @@ function SubCommand(
 
 export { SubCommand };
 
+/**
+ * Decorator for the command handlers declared with `@SubCommand`
+ * Sets the minimum user level required to run the command
+ * @param level
+ */
 export function PermissionLevel(level: UserLevel): MethodDecorator {
     return Reflect.metadata(permissionLevelKey, level);
 }
 
 export type ArgumentsParam = Map<string, ArgumentType>;
 
+/**
+ * Decorator for the command handlers declared with `@SubCommand`
+ * Declares the arguments of the command/subcommand, including their name and type
+ * The Command Handler will receive them in the same order
+ */
 export function Arguments(...args: Array<[string, ArgumentType]>): MethodDecorator {
     const newArguments: ArgumentsParam = new Map(args);
     return Reflect.metadata(argumentsSpecKey, newArguments);

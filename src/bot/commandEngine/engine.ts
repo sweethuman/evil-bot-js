@@ -117,7 +117,7 @@ function isAllowed(
 
 /**
  * It takes a CommandObject and the additional parsed data and handles Permission Checking, And Argument Injection for
- * the command and converting everything into the expected type for the actual Command Handler
+ * the command and converting everything into the expected type for the actual Command Handler and calls said Command Handler
  */
 async function commandInjector(commandObject: CommandObject, additionalData: AdditionalData): Promise<string> {
     const { msg, parsedCommand, twitchClient } = additionalData;
