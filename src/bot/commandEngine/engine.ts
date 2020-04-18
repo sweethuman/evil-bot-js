@@ -181,15 +181,19 @@ function instantiateCommandObject(
 ): CommandObject {
     const commandFunc = commandClass[funcName];
     if (typeof commandFunc === 'function') {
-        let argumentsSpec: ArgumentsParam | undefined;
-        let permissionLevel: UserLevel | undefined;
-        if (Reflect.hasMetadata(argumentsSpecKey, commandClass, funcName)) {
-            argumentsSpec = Reflect.getMetadata(argumentsSpecKey, commandClass, funcName);
-        }
-        if (Reflect.hasMetadata(permissionLevelKey, commandClass, funcName)) {
-            permissionLevel = Reflect.getMetadata(permissionLevelKey, commandClass, funcName);
-        }
-        return new CommandObject(commandFunc.bind(commandClass), argumentsSpec, permissionLevel, isSubCommand);
+        const argumentsSpec: CommandArguments | undefined = Reflect.getMetadata(
+            argumentsSpecKey,
+            commandClass,
+            funcName
+        );
+        const permissionLevel: UserLevel | undefined = Reflect.getMetadata(permissionLevelKey, commandClass, funcName);
+        return new CommandObject(
+            commandFunc.bind(commandClass),
+            argumentsSpec?.requiredArguments,
+            argumentsSpec?.optionalArguments,
+            permissionLevel,
+            isSubCommand
+        );
     } else {
         throw new SubCommandDefineError('Property of class stored in reflection is not a function!');
     }

@@ -5,7 +5,8 @@ import { CommandHandler } from './interfaces';
 export class CommandObject {
     constructor(
         readonly handler: CommandHandler,
-        readonly args?: ArgumentsParam,
+        readonly requiredArgs?: ArgumentsParam,
+        readonly optionalArgs?: ArgumentsParam,
         readonly permissionLevel?: UserLevel,
         readonly subCommand = false
     ) {}
