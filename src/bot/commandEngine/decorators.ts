@@ -57,8 +57,33 @@ export type ArgumentsParam = Map<string, ArgumentType>;
  * Decorator for the command handlers declared with `@SubCommand`
  * Declares the arguments of the command/subcommand, including their name and type
  * The Command Handler will receive them in the same order
+ * The NAME of the arguments be UNIQUE
  */
-export function Arguments(...args: Array<[string, ArgumentType]>): MethodDecorator {
-    const newArguments: ArgumentsParam = new Map(args);
-    return Reflect.metadata(argumentsSpecKey, newArguments);
+export function Arguments(
+    ...args: Array<
+        | { name: string; type: ArgumentType; optional?: boolean }
+        | [string, ArgumentType]
+        | [string, ArgumentType, boolean]
+    >
+): MethodDecorator {
+    const requiredArguments: ArgumentsParam = new Map<string, ArgumentType>();
+    const optionalArguments: ArgumentsParam = new Map<string, ArgumentType>();
+    let alreadyOptional = false;
+    for (let argument of args) {
+        if (Array.isArray(argument)) {
+            argument = {
+                name: argument[0],
+                type: argument[1],
+                optional: argument[2],
+            };
+        }
+        if (alreadyOptional && !argument.optional) throw new Error('Non optional argument after optional argument!');
+        if (argument.optional) {
+            alreadyOptional = true;
+            optionalArguments.set(argument.name, argument.type);
+            continue;
+        }
+        requiredArguments.set(argument.name, argument.type);
+    }
+    return Reflect.metadata(argumentsSpecKey, { requiredArguments, optionalArguments });
 }
