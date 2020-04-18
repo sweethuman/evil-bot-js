@@ -1,22 +1,16 @@
 import _ from 'lodash';
 import { PrivateMessage } from 'twitch-chat-client';
-import TwitchClient, { HelixUser } from 'twitch';
+import TwitchClient from 'twitch';
 import chalk from 'chalk';
 import { logger } from '../../winston';
 import * as Commands from '../commands';
 import 'reflect-metadata';
-import {
-    ArgumentsParam,
-    argumentsSpecKey,
-    commandStorageKey,
-    permissionLevelKey,
-    subCommandNameKey,
-} from './decorators';
+import { argumentsSpecKey, commandStorageKey, permissionLevelKey, subCommandNameKey } from './decorators';
 import { CommandObject } from './commandObject';
 import { ArgumentType, UserLevel } from './enums';
 import { AbstractCommand } from './abstractCommand';
 import { SubCommandDefineError } from '../../errors/subCommandDefine';
-import { AdditionalData, ParsedCommand } from './interfaces';
+import { AdditionalData, CommandArguments, OptionalArguments, ParsedCommand, RequiredArguments } from './interfaces';
 import i18next from 'i18next';
 
 const commands: {
@@ -134,38 +128,74 @@ async function commandInjector(commandObject: CommandObject, additionalData: Add
     ) {
         return '';
     }
-    const args: Array<string | number | HelixUser> = [];
-    if (commandObject.args != null) {
-        if (commandObject.args.size <= parsedCommand.argumentsAsArray.length - (commandObject.subCommand ? 1 : 0)) {
-            let i = commandObject.subCommand ? 1 : 0;
-            for (const [argName, argType] of commandObject.args) {
+    const argsToProcess: string[] = parsedCommand.argumentsAsArray;
+    if (commandObject.subCommand) argsToProcess.shift();
+    const reqArgs: RequiredArguments = {};
+    const optArgs: OptionalArguments = {};
+    if (commandObject.requiredArgs != null) {
+        if (commandObject.requiredArgs.size <= argsToProcess.length) {
+            for (const [argName, argType] of commandObject.requiredArgs) {
+                const currentArgument: string = argsToProcess.shift()!;
                 if (argType === ArgumentType.String) {
-                    args.push(parsedCommand.argumentsAsArray[i]);
+                    reqArgs[argName] = currentArgument;
                 } else if (argType === ArgumentType.Number) {
-                    const convertedNumber = Number.parseInt(parsedCommand.argumentsAsArray[i], 10);
+                    const convertedNumber = Number.parseInt(currentArgument, 10);
                     if (isNaN(convertedNumber)) {
                         return i18next.t('common:argumentNotANumber', {
                             argument: argName,
-                            value: parsedCommand.argumentsAsArray[i],
+                            value: currentArgument,
                         });
                     }
-                    args.push(convertedNumber);
+                    reqArgs[argName] = convertedNumber;
                 } else if (argType === ArgumentType.TwitchUser) {
-                    const user = await twitchClient.helix.users.getUserByName(parsedCommand.argumentsAsArray[i]);
+                    const user = await twitchClient.helix.users.getUserByName(currentArgument);
                     if (user == null) {
-                        return i18next.t('twitch:missingUsername', { username: parsedCommand.argumentsAsArray[i] });
+                        return i18next.t('twitch:missingUsername', {
+                            username: currentArgument,
+                        });
                     }
-                    args.push(user);
+                    reqArgs[argName] = user;
                 } else {
                     return i18next.t('common:commandArgumentNotSupported');
                 }
-                i++;
             }
         } else {
             return i18next.t('common:notEnoughArguments', { command: parsedCommand.command });
         }
     }
-    return commandObject.handler(additionalData, ...args);
+    if (commandObject.optionalArgs != null) {
+        for (const [argName, argType] of commandObject.optionalArgs) {
+            const currentArgument = argsToProcess.shift();
+            if (currentArgument == null) {
+                break;
+            }
+            //TODO Code 2
+            //TODO this is duplicate with the code above, convert to a function
+            if (argType === ArgumentType.String) {
+                optArgs[argName] = currentArgument;
+            } else if (argType === ArgumentType.Number) {
+                const convertedNumber = Number.parseInt(currentArgument, 10);
+                if (isNaN(convertedNumber)) {
+                    return i18next.t('common:argumentNotANumber', {
+                        argument: argName,
+                        value: currentArgument,
+                    });
+                }
+                optArgs[argName] = convertedNumber;
+            } else if (argType === ArgumentType.TwitchUser) {
+                const user = await twitchClient.helix.users.getUserByName(currentArgument);
+                if (user == null) {
+                    return i18next.t('twitch:missingUsername', {
+                        username: currentArgument,
+                    });
+                }
+                optArgs[argName] = user;
+            } else {
+                return i18next.t('common:commandArgumentNotSupported');
+            }
+        }
+    }
+    return commandObject.handler(additionalData, reqArgs, optArgs);
 }
 
 /**
