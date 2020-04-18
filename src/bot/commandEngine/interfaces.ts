@@ -1,5 +1,6 @@
 import { PrivateMessage } from 'twitch-chat-client';
 import TwitchClient, { HelixUser } from 'twitch';
+import { ArgumentsParam } from './decorators';
 
 export interface AdditionalData {
     channel: string;
@@ -20,5 +21,18 @@ export interface ParsedCommand {
 }
 
 export interface CommandHandler {
-    (additionalData: AdditionalData, ...args: Array<string | number | HelixUser>): string | Promise<string>;
+    (additionalData: AdditionalData, reqArgs: RequiredArguments, optArgs: OptionalArguments): string | Promise<string>;
+}
+
+export interface RequiredArguments {
+    [key: string]: string | number | HelixUser;
+}
+
+export interface OptionalArguments {
+    [key: string]: string | number | HelixUser | undefined;
+}
+
+export interface CommandArguments {
+    requiredArguments: ArgumentsParam;
+    optionalArguments: ArgumentsParam;
 }
