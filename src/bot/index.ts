@@ -9,6 +9,7 @@ import * as timedPoints from './modules/timedPoints';
 import i18next from 'i18next';
 import * as userMonitor from './modules/userMonitor';
 import * as rankManager from './modules/rankManager';
+import * as filterManager from './modules/filterManager';
 import { twitchUsers } from './modules/userMonitor';
 import { ranks } from './modules/rankManager';
 import { logger } from '../winston';
@@ -53,6 +54,7 @@ async function loadModules(twitchUsername: string, chatClient: ChatClient, twitc
     await timedMessagesModule.load('#' + twitchUsername, chatClient);
     await timedPoints.load(twitchUsername, twitchClient);
     userMonitor.load();
+    await filterManager.load();
     await rankManager.load();
     logger.debug('Modules Loaded!');
 }
