@@ -4,6 +4,7 @@
  */
 
 import { TalkerUser } from './interfaces';
+import { isUserIdFiltered } from '../modules/filterManager';
 
 /**
  * Talker user Interface
@@ -12,6 +13,7 @@ import { TalkerUser } from './interfaces';
 let talkers: Map<string, TalkerUser> = new Map<string, TalkerUser>();
 
 export function addTalker(user: TalkerUser): void {
+    if (isUserIdFiltered(user.userId)) return;
     talkers.set(user.userId, user);
 }
 

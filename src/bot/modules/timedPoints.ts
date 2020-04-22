@@ -4,6 +4,8 @@ import { clearTalkers } from '../trackers/talkerTracker';
 import { auth, firestore } from '../../firebase';
 import firebase from 'firebase';
 import TwitchClient from 'twitch';
+import { isUserIdFiltered } from './filterManager';
+import _ from 'lodash';
 
 let talkerTimeout: NodeJS.Timeout | null = null;
 let lurkerTimeout: NodeJS.Timeout | null = null;
@@ -57,8 +59,10 @@ async function updateTalkers(): Promise<void> {
 async function updateLurkers(username: string, twitchClient: TwitchClient): Promise<void> {
     logger.debug(`${chalk.blue('Timed Points')}: Updating Lurkers`);
     const chatters = await twitchClient.unsupported.getChatters(username);
-    // TODO filter chatters with filter module
-    const users = await twitchClient.helix.users.getUsersByNames(chatters.allChatters);
+    let users = await twitchClient.helix.users.getUsersByNames(chatters.allChatters);
+    users = _.filter(users, user => {
+        return !isUserIdFiltered(user.id);
+    });
     const batch = firestore.batch();
     for (const user of users) {
         batch.set(

@@ -3,3 +3,4 @@
  */
 export * from './followage';
 export * from './xprate';
+export * from './filter';

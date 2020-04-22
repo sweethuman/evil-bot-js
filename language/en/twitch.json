@@ -5,5 +5,13 @@
   "followAge_success": "@{{user}} You have been following for {{timeStamp}}!",
   "followAge_fail": "@{{user}} You are not following!",
   "rankUpdated": "@{{user}} You are now a {{rank}}",
-  "missingUsername": "@{{username}} doesn't seem to exist."
+  "missingUsername": "@{{username}} doesn't seem to exist.",
+  "filter_get_filtered": "@{{username}} is filtered.",
+  "filter_get_notFiltered": "@{{username}} is not filtered.",
+  "filter_get_noneInFilter": "No users are filtered.",
+  "filter_get_allInFilter": "Filtered users: {{users}}",
+  "filter_add_addedInFilter": "@{{username}} has been added to the filter.",
+  "filter_add_notAddedInFilter": "@{{username}} is already in the filter.",
+  "filter_remove_removedFromFilter": "@{{username}} has been removed from the filter.",
+  "filter_remove_notRemovedFromFilter": "@{{username}} is not in the filter."
 }

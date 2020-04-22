@@ -1,6 +1,7 @@
 /**
  * Module which holds user id of users that have come through the channel at least once
  */
+import { isUserIdFiltered } from '../modules/filterManager';
 
 const presentUsers: Set<string> = new Set<string>();
 
@@ -10,7 +11,7 @@ const presentUsers: Set<string> = new Set<string>();
  * @returns {boolean}
  */
 export function isUserIdPresent(userId: string): boolean {
-    if (presentUsers.has(userId)) {
+    if (presentUsers.has(userId) || isUserIdFiltered(userId)) {
         return true;
     }
     presentUsers.add(userId);
