@@ -13,7 +13,6 @@ import { twitchUsers } from '../modules/userMonitor';
 import { auth, firestore } from '../../firebase';
 
 //TODO Code 1
-//TODO Code 4
 export class Filter extends AbstractCommand {
     name = 'filter';
 
