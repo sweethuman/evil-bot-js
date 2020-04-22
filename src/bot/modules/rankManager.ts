@@ -24,6 +24,7 @@ export let ranks: Rank[] = [];
 
 export async function load() {
     //Load Rank Config
+    logger.info(`${chalk.blue('Rank Manager')}: Loading Rank Manager`);
     const ranksData = (
         await firestore
             .collection(`users/${auth.currentUser!.uid}/config`)
@@ -36,16 +37,17 @@ export async function load() {
         !(ranksData.ranks instanceof Array) ||
         ranksData.ranks.length === 0
     ) {
-        logger.debug(chalk.red("Ranks doesn't exist"));
+        logger.warn(`${chalk.blue('Rank Manager')}: ${chalk.red("Ranks doesn't exist \n MODULE DISABLED")}`);
         return;
     }
     ranks = ranksData.ranks;
 
     usersUpdated.attach(announceUpdatedRankUsers);
+    logger.info(`${chalk.blue('Rank Manager')}: Rank Manager loaded`);
 }
 
 async function announceUpdatedRankUsers(data: TwitchDatabaseUser[]) {
-    logger.silly(data.length.toString());
+    logger.debug(`${chalk.blue('Rank Manager')}: Received update for ${chalk.yellow(data.length.toString())} users`);
     // Check for Updated user/users if rank changed
     for (const user of data) {
         let foundRank = false;

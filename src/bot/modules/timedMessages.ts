@@ -7,6 +7,7 @@ import { logger } from '../../winston';
 let intervalTimeout: NodeJS.Timeout | null = null;
 let messageCounter: number;
 export async function load(channel: string, chatClient: ChatClient) {
+    logger.info(`${chalk.blue('Timed Messages')}: Loading Timed Messages Module`);
     messageCounter = -1;
     //Retrieve Config
     const messagesDoc = await firestore
@@ -14,7 +15,11 @@ export async function load(channel: string, chatClient: ChatClient) {
         .doc('timedmessages')
         .get();
     if (!messagesDoc.exists) {
-        logger.warn(chalk.bgRed('Timed Messages Configuration Does Not Exist \n MODULE DISABLED'));
+        logger.warn(
+            `${chalk.blue('Timed Messages')}: ${chalk.bgRed(
+                'Timed Messages Configuration Does Not Exist \n MODULE DISABLED'
+            )}`
+        );
         return;
     }
     const messagesData: {
@@ -25,11 +30,11 @@ export async function load(channel: string, chatClient: ChatClient) {
 
     // Check for incompatible data format
     if (messagesData.timeInterval == null || messagesData.messageOrder == null || messagesData.messages == null) {
-        logger.error(chalk.bgRed('Timed Messages Config is not a valid CONFIG'));
+        logger.error(`${chalk.blue('Timed Messages')}: ${chalk.bgRed('Timed Messages Config is not a valid CONFIG')}`);
         return;
     }
     if (messagesData.messages.length === 0) {
-        logger.warn(chalk.red('There are no Timed Messages! \n MODULE DISABLED'));
+        logger.warn(`${chalk.blue('Timed Messages')}: ${chalk.red('There are no Timed Messages! \n MODULE DISABLED')}`);
         return;
     }
 
@@ -37,6 +42,7 @@ export async function load(channel: string, chatClient: ChatClient) {
         () => sendMessage(chatClient, channel, messagesData),
         messagesData.timeInterval * 60000
     );
+    logger.info(`${chalk.blue('Timed Messages')}: Loaded Timed Messages Module`);
 }
 
 function sendMessage(
@@ -66,7 +72,7 @@ function sendMessage(
         default: {
             logger.error(
                 chalk.red(
-                    `Message Order ${chalk.blue(
+                    `${chalk.blue('Timed Messages')}: Message Order ${chalk.blue(
                         `${messagesData.messageOrder}`
                     )} does not exist in current version of the app; Timed Messages Disabled`
                 )
@@ -79,7 +85,7 @@ function sendMessage(
 
 export function unload(): void {
     if (intervalTimeout == null) {
-        logger.error(chalk.red("Timed Messages Module hasn't been started"));
+        logger.error(`${chalk.blue('Timed Messages')}: ${chalk.red("Timed Messages Module hasn't been started")}`);
         return;
     }
     clearInterval(intervalTimeout);

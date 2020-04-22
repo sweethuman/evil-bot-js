@@ -22,8 +22,8 @@ const commands: {
  * CommandObjects to be read and interpreted by the engine
  */
 export function loadCommands(): void {
-    logger.debug('Loading commands');
-    for (const [key, value] of Object.entries(Commands)) {
+    logger.info(`${chalk.blue('Engine')}: Loading commands`);
+    for (const [, value] of Object.entries(Commands)) {
         const command = new value();
         const storage: string | string[] = Reflect.getMetadata(commandStorageKey, command);
         if (typeof storage === 'string') {
@@ -37,7 +37,7 @@ export function loadCommands(): void {
             commands[command.name] = setOfChildren;
         }
     }
-    logger.debug('Commands loaded');
+    logger.info(`${chalk.blue('Engine')}: Commands loaded`);
 }
 
 /**
@@ -54,7 +54,7 @@ export async function executeCommands(
     const parsedCommand = parser(message);
     const registeredValue = commands[parsedCommand.command];
     if (registeredValue == null) return '';
-    logger.debug(chalk.blue(parsedCommand.command) + chalk.yellow(' command called'));
+    logger.info(`${chalk.blue('Engine')}: ${chalk.yellow(parsedCommand.command)} command called`);
     const additionalData: AdditionalData = {
         channel,
         user,
@@ -76,6 +76,7 @@ export async function executeCommands(
                 command: parsedCommand.command,
             });
         }
+        logger.info(`${chalk.blue('Engine')}: ${chalk.yellow(parsedCommand.argumentsAsArray[0])} subcommand called`);
         return commandInjector(subCommand, additionalData);
     }
     return '';

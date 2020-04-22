@@ -10,8 +10,11 @@ let lurkerTimeout: NodeJS.Timeout | null = null;
 
 //started when 'run' command is run, which means user is already logged in
 export async function load(username: string, twitchClient: TwitchClient) {
-    talkerTimeout = setInterval(updateTalkers, 60000 * 0.25);
-    lurkerTimeout = global.setInterval(updateLurkers, 60000 * 0.3, username, twitchClient);
+    logger.info(`${chalk.blue('Timed Points')}: Loading Timed Points Module`);
+    logger.info('Update rate is set to 1 minute.');
+    talkerTimeout = setInterval(updateTalkers, 60000);
+    lurkerTimeout = global.setInterval(updateLurkers, 60000, username, twitchClient);
+    logger.info(`${chalk.blue('Timed Points')}: Loaded Timed Points Module`);
 }
 
 /**
@@ -20,7 +23,7 @@ export async function load(username: string, twitchClient: TwitchClient) {
  * @returns {Promise<void>}
  */
 async function updateTalkers(): Promise<void> {
-    logger.debug('Updating Talkers');
+    logger.debug(`${chalk.blue('Timed Points')}: Updating Talkers`);
     const talkers = clearTalkers();
     const batch = firestore.batch();
     for (const talker of talkers) {
@@ -41,7 +44,7 @@ async function updateTalkers(): Promise<void> {
         );
     }
     await batch.commit();
-    logger.debug('Updated Talkers');
+    logger.debug(`${chalk.blue('Timed Points')}: Updated Talkers`);
 }
 
 /**
@@ -52,7 +55,7 @@ async function updateTalkers(): Promise<void> {
  * @returns {Promise<void>}
  */
 async function updateLurkers(username: string, twitchClient: TwitchClient): Promise<void> {
-    logger.debug('Updating Lurkers');
+    logger.debug(`${chalk.blue('Timed Points')}: Updating Lurkers`);
     const chatters = await twitchClient.unsupported.getChatters(username);
     // TODO filter chatters with filter module
     const users = await twitchClient.helix.users.getUsersByNames(chatters.allChatters);
@@ -75,12 +78,12 @@ async function updateLurkers(username: string, twitchClient: TwitchClient): Prom
         );
     }
     await batch.commit();
-    logger.debug('Updated Lurkers');
+    logger.debug(`${chalk.blue('Timed Points')}: Updated Lurkers`);
 }
 
 export function unload(): void {
     if (talkerTimeout == null || lurkerTimeout == null) {
-        logger.error(chalk.red("Timed Points Module hasn't been started"));
+        logger.error(`${chalk.blue('Timed Points')}: ${chalk.red("Timed Points Module hasn't been started")}`);
         return;
     }
     clearInterval(talkerTimeout);

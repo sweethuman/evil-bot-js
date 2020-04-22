@@ -13,6 +13,7 @@ import { twitchUsers } from './modules/userMonitor';
 import { ranks } from './modules/rankManager';
 import { logger } from '../winston';
 import { loadCommands } from './commandEngine/engine';
+import chalk from 'chalk';
 
 /**
  * Variable Used globally to check the state of the bot
@@ -21,7 +22,7 @@ import { loadCommands } from './commandEngine/engine';
  */
 export let isBotRunning = false;
 export async function run(clientId: string, accessToken: string, twitchUsername: string): Promise<void> {
-    logger.debug('Starting Bot');
+    logger.info(`${chalk.blue('Bot')}: Starting Bot`);
     isBotRunning = true;
     loadCommands();
     const { twitchClient, chatClient } = await initializeClient(twitchUsername, clientId, accessToken);
@@ -35,29 +36,29 @@ export async function run(clientId: string, accessToken: string, twitchUsername:
 }
 
 async function initializeClient(twitchUsername: string, clientId: string, accessToken: string) {
-    logger.debug('Initializing client!');
+    logger.info(`${chalk.blue('Bot')}: Initializing client!`);
     const twitchClient: TwitchClient = await TwitchClient.withCredentials(clientId, accessToken);
     const chatClient = await ChatClient.forTwitchClient(twitchClient);
-    logger.debug('Connecting chat client!');
+    logger.info(`${chalk.blue('Bot')}: Connecting chat client!`);
     await chatClient.connect();
     chatClient.onRegister(() => {
         chatClient.join(twitchUsername);
-        logger.debug(`Joined channel ${twitchUsername}`);
+        logger.info(`${chalk.blue('Bot')}: Joined channel ${twitchUsername}`);
     });
-    logger.debug('Finishing Initialization');
+    logger.info(`${chalk.blue('Bot')}: Finishing Initialization`);
     return { twitchClient, chatClient };
 }
 
 async function loadModules(twitchUsername: string, chatClient: ChatClient, twitchClient: TwitchClient) {
-    logger.debug('Loding Modules');
+    logger.info(`${chalk.blue('Bot')}: Loding Modules`);
     await timedMessagesModule.load('#' + twitchUsername, chatClient);
     await timedPoints.load(twitchUsername, twitchClient);
     userMonitor.load();
     await rankManager.load();
-    logger.debug('Modules Loaded!');
+    logger.info(`${chalk.blue('Bot')}: Modules Loaded!`);
 }
 function attachUpdatedRankNotification(twitchUsername: string, chatClient: ChatClient) {
-    logger.debug('Attaching Update Rank Notification.');
+    logger.debug(`${chalk.blue('Bot')}: Attaching Update Rank Notification.`);
     rankManager.updatedRank.attach(data => {
         chatClient.say(
             twitchUsername,

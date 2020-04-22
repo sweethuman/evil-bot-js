@@ -4,6 +4,7 @@ import QuerySnapshot = firebase.firestore.QuerySnapshot;
 import firebase from 'firebase';
 import { SyncEvent } from 'ts-events';
 import { TwitchDatabaseUser } from './interfaces';
+import chalk from 'chalk';
 
 /**
  * Module monitors users and database and triggers an event if any of them is changed
@@ -26,7 +27,7 @@ export const usersUpdated = new SyncEvent<TwitchDatabaseUser[]>();
  * @returns {() => void}
  */
 export function load() {
-    logger.debug('User Monitor Loaded');
+    logger.info(`${chalk.blue('Timed Points')}: Loading User Monitor`);
     return firestore
         .collection('users')
         .doc(auth.currentUser!.uid)
