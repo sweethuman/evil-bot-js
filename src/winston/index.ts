@@ -16,6 +16,6 @@ export const logger = winston.createLogger({
         format.colorize(),
         customFormat
     ),
-    transports: [new VorpalTransport()],
+    transports: [new VorpalTransport(), new winston.transports.File({ filename: 'combined.log', level: 'silly' })],
     exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log' })],
 });
