@@ -22,7 +22,7 @@ vorpal.command('login <email>', 'Logs in the user').action(async args => {
     ]);
     try {
         await auth.signInWithEmailAndPassword(args.email, promptResult.loginPassword);
-        vorpal.log(`Logged In User with email "${args.email}" and password "${promptResult.loginPassword}"`);
+        vorpal.log(`Logged In User with email "${args.email}"`);
     } catch (e) {
         vorpal.log(chalk.bgRed(e.code));
     }
