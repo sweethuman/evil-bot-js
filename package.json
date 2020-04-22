@@ -2,6 +2,7 @@
   "name": "evil-bot-js",
   "version": "0.0.1",
   "main": "build/app.js",
+  "engines" : { "node" : ">=13.12.0" },
   "scripts": {
     "start": "tsc -p . && node build/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
