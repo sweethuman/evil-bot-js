@@ -56,7 +56,6 @@ async function updateTalkers(): Promise<void> {
 async function updateLurkers(username: string, twitchClient: TwitchClient): Promise<void> {
     logger.debug('Updating Lurkers');
     const chatters = await twitchClient.unsupported.getChatters(username);
-    // TODO filter chatters with filter module
     let users = await twitchClient.helix.users.getUsersByNames(chatters.allChatters);
     users = _.filter(users, user => {
         return !isUserIdFiltered(user.id);

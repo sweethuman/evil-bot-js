@@ -11,6 +11,7 @@ import {
 } from '../modules/filterManager';
 import { twitchUsers } from '../modules/userMonitor';
 import { auth, firestore } from '../../firebase';
+import i18next from 'i18next';
 
 //TODO Code 1
 export class Filter extends AbstractCommand {
@@ -22,13 +23,13 @@ export class Filter extends AbstractCommand {
         if (optArgs.username != null) {
             const user = optArgs.username as HelixUser;
             if (isUserIdFiltered(user.id)) {
-                return `${user.displayName} is Filtered!`;
+                return i18next.t('twitch:filter_get_filtered', { username: user.displayName });
             }
-            return `${user.displayName} is not filtered`;
+            return i18next.t('twitch:filter_get_notFiltered', { username: user.displayName });
         }
         const userIds: string[] = getAllFilteredUserIds();
         if (userIds.length === 0) {
-            return 'No users filtered!';
+            return i18next.t('twitch:filter_get_noneInFilter');
         }
         const stringOfUsernames: string[] = [];
         for (const userId of userIds) {
@@ -53,7 +54,7 @@ export class Filter extends AbstractCommand {
             }
             stringOfUsernames.push(user.lastSeenDisplayName);
         }
-        return `FilteredUsers: ${stringOfUsernames.join(', ')}`;
+        return i18next.t('twitch:filter_get_allInFilter', { users: stringOfUsernames.join(', ') });
     }
 
     @SubCommand('add')
@@ -63,9 +64,9 @@ export class Filter extends AbstractCommand {
         const user = reqArgs.username as HelixUser;
         const success = await addUserIdToFilter(user.id);
         if (success) {
-            return `${user.displayName} has been added to the filter`;
+            return i18next.t('twitch:filter_add_addedInFilter', { username: user.displayName });
         }
-        return `${user.displayName} is already in the filter`;
+        return i18next.t('twitch:filter_add_notAddedInFilter', { username: user.displayName });
     }
 
     @SubCommand('remove')
@@ -75,8 +76,8 @@ export class Filter extends AbstractCommand {
         const user = reqArgs.username as HelixUser;
         const success = await removeUserIdFromFilter(user.id);
         if (success) {
-            return `${user.displayName} has been removed from the filter`;
+            return i18next.t('twitch:filter_remove_removedFromFilter', { username: user.displayName });
         }
-        return `${user.displayName} is not in the filter`;
+        return i18next.t('twitch:filter_remove_notRemovedFromFilter', { username: user.displayName });
     }
 }
