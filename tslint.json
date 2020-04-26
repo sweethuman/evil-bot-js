@@ -4,5 +4,8 @@
     "exclude": [
       "**/*.json"
     ]
+  },
+  "rules": {
+    "interface-name": [false]
   }
 }
